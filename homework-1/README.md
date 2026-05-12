@@ -1,7 +1,7 @@
 # Banking Transactions API
 
-> **Student Name**: [Your Name]
-> **Date Submitted**: [Date]
+> **Student Name**: Yurii Habrusiev
+> **Date Submitted**: May 13, 2026
 > **AI Tools Used**: Codex
 
 ---
