@@ -1,0 +1,27 @@
+[tools]
+python = "3.14"
+uv = "latest"
+
+[tasks.setup]
+description = "Install project dependencies"
+run = "uv sync"
+
+[tasks.dev]
+description = "Run the FastAPI development server"
+run = "uv run fastapi dev src/banking_transactions_api/main.py"
+
+[tasks.lint]
+description = "Run Ruff lint checks"
+run = "uv run ruff check ."
+
+[tasks."lint:fix"]
+description = "Run Ruff and apply safe fixes"
+run = "uv run ruff check --fix ."
+
+[tasks.typecheck]
+description = "Run ty type checks"
+run = "uv run ty check"
+
+[tasks.test]
+description = "Run validation checks"
+run = "mise run lint && mise run typecheck"
