@@ -1,15 +1,18 @@
+import csv
+from io import StringIO
 from datetime import date
 from decimal import Decimal
 from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from banking_transactions_api.models import (
     ACCOUNT_PATTERN,
     BalanceResponse,
     ErrorResponse,
+    InterestResponse,
     SummaryResponse,
     Transaction,
     TransactionCreate,
@@ -29,6 +32,8 @@ app = FastAPI(
 )
 
 AccountId = Annotated[str, Path(pattern=ACCOUNT_PATTERN, examples=["ACC-12345"])]
+PositiveRate = Annotated[Decimal, Query(gt=0, examples=["0.05"])]
+PositiveDays = Annotated[int, Query(gt=0, examples=[30])]
 
 
 @app.exception_handler(RequestValidationError)
@@ -82,6 +87,44 @@ def get_transactions(
     )
 
 
+@app.get("/transactions/export")
+def export_transactions(format: Annotated[str, Query(pattern="^csv$")] = "csv") -> Response:
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(
+        [
+            "id",
+            "fromAccount",
+            "toAccount",
+            "amount",
+            "currency",
+            "type",
+            "timestamp",
+            "status",
+        ]
+    )
+
+    for transaction in list_transactions():
+        writer.writerow(
+            [
+                transaction.id,
+                transaction.from_account,
+                transaction.to_account,
+                transaction.amount,
+                transaction.currency,
+                transaction.type,
+                transaction.timestamp.isoformat(),
+                transaction.status,
+            ]
+        )
+
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="transactions.csv"'},
+    )
+
+
 @app.get("/transactions/{transaction_id}", response_model=Transaction)
 def get_transaction_by_id(transaction_id: str) -> Transaction:
     transaction = get_transaction(transaction_id)
@@ -93,6 +136,25 @@ def get_transaction_by_id(transaction_id: str) -> Transaction:
 @app.get("/accounts/{account_id}/balance", response_model=BalanceResponse)
 def get_account_balance(account_id: AccountId) -> BalanceResponse:
     return BalanceResponse(accountId=account_id, balance=calculate_balance(account_id), currency="USD")
+
+
+@app.get("/accounts/{account_id}/interest", response_model=InterestResponse)
+def get_account_interest(
+    account_id: AccountId,
+    rate: PositiveRate,
+    days: PositiveDays,
+) -> InterestResponse:
+    balance = calculate_balance(account_id)
+    interest = balance * rate * Decimal(days) / Decimal("365")
+
+    return InterestResponse(
+        accountId=account_id,
+        balance=balance,
+        rate=rate,
+        days=days,
+        interest=interest,
+        currency="USD",
+    )
 
 
 @app.get("/accounts/{account_id}/summary", response_model=SummaryResponse)

@@ -26,3 +26,9 @@ GET {{baseUrl}}/accounts/ACC-12345/balance
 
 ### Get account summary
 GET {{baseUrl}}/accounts/ACC-12345/summary
+
+### Calculate simple interest
+GET {{baseUrl}}/accounts/ACC-12345/interest?rate=0.05&days=30
+
+### Export transactions as CSV
+GET {{baseUrl}}/transactions/export?format=csv

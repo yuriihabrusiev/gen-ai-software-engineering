@@ -18,11 +18,13 @@ authentication, or background worker, so the API can be started and tested quick
 - List all transactions or filter them by account, type, and date range.
 - Fetch a transaction by ID.
 - Calculate account balances from transaction history.
+- Calculate simple interest for an account balance.
+- Export transactions as CSV.
 - Validate positive amounts with at most 2 decimal places.
 - Validate account IDs in the `ACC-XXXXX` format.
 - Validate supported currency codes.
 - Return structured validation errors with HTTP 400.
-- Additional feature: account summary endpoint.
+- Additional features: account summary, simple interest, and CSV export endpoints.
 
 ## Project Structure
 

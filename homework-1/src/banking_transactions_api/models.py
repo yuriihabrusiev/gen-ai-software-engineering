@@ -68,6 +68,15 @@ class BalanceResponse(BaseModel):
     currency: str
 
 
+class InterestResponse(BaseModel):
+    account_id: str = Field(alias="accountId")
+    balance: Decimal
+    rate: Decimal
+    days: int
+    interest: Decimal
+    currency: str
+
+
 class SummaryResponse(BaseModel):
     account_id: str = Field(alias="accountId")
     total_deposits: Decimal = Field(alias="totalDeposits")

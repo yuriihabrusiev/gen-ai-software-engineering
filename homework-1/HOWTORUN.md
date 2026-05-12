@@ -93,6 +93,18 @@ Get account summary:
 curl http://127.0.0.1:8000/accounts/ACC-12345/summary
 ```
 
+Calculate simple interest:
+
+```bash
+curl "http://127.0.0.1:8000/accounts/ACC-12345/interest?rate=0.05&days=30"
+```
+
+Export transactions as CSV:
+
+```bash
+curl "http://127.0.0.1:8000/transactions/export?format=csv"
+```
+
 You can also use `demo/sample-requests.http` with the VS Code REST Client extension or a
 compatible HTTP client.
 
