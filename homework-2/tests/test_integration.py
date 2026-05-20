@@ -101,7 +101,7 @@ def test_bulk_import_rejects_large_csv_and_json_uploads(
     )
     json_response = client.post(
         "/tickets/import",
-        files={"file": ("tickets.json", "[\"01234567890\"]", "application/json")},
+        files={"file": ("tickets.json", '["01234567890"]', "application/json")},
     )
 
     assert csv_response.status_code == 413
