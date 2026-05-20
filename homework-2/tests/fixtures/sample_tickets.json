@@ -1,0 +1,9 @@
+[
+  {
+    "customer_id": "c1",
+    "customer_email": "ada@example.com",
+    "customer_name": "Ada Lovelace",
+    "subject": "Login problem",
+    "description": "I cannot access my account after password reset"
+  }
+]

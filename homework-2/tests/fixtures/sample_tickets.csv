@@ -1,0 +1,3 @@
+customer_id,customer_email,customer_name,subject,description,category,priority,tags
+c1,ada@example.com,Ada Lovelace,Login problem,I cannot access my account after password reset,account_access,urgent,"login,password"
+c2,grace@example.com,Grace Hopper,Invoice question,Please explain the duplicate invoice charge,billing_question,medium,billing

@@ -1,0 +1,9 @@
+<tickets>
+  <ticket>
+    <customer_id>c1</customer_id>
+    <customer_email>ada@example.com</customer_email>
+    <customer_name>Ada Lovelace</customer_name>
+    <subject>Login problem</subject>
+    <description>I cannot access my account after password reset</description>
+  </ticket>
+</tickets>
