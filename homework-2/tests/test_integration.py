@@ -1,8 +1,10 @@
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
+from src.routers import tickets as tickets_router
 from src.models.ticket import TicketCreate
 from src.services import ticket_service
 
@@ -86,6 +88,24 @@ def test_bulk_import_with_partial_failure_keeps_valid_records(client: TestClient
     assert response.json()["successful"] == 1
     assert response.json()["failed"] == 1
     assert len(client.get("/tickets").json()) == 1
+
+
+def test_bulk_import_rejects_large_csv_and_json_uploads(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(tickets_router, "MAX_IMPORT_BYTES", 10)
+
+    csv_response = client.post(
+        "/tickets/import",
+        files={"file": ("tickets.csv", "customer_id\n01234567890", "text/csv")},
+    )
+    json_response = client.post(
+        "/tickets/import",
+        files={"file": ("tickets.json", "[\"01234567890\"]", "application/json")},
+    )
+
+    assert csv_response.status_code == 413
+    assert json_response.status_code == 413
 
 
 def test_auto_classify_on_creation_then_manual_override(

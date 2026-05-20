@@ -13,6 +13,7 @@ from src.models.ticket import (
 from src.services import classification_service, import_service, ticket_service
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
+MAX_IMPORT_BYTES = import_service.MAX_XML_IMPORT_BYTES
 
 _SUPPORTED_CONTENT_TYPES = {
     "text/csv": "csv",
@@ -20,6 +21,14 @@ _SUPPORTED_CONTENT_TYPES = {
     "application/xml": "xml",
     "text/xml": "xml",
 }
+
+
+def _get_upload_size(file: UploadFile) -> int:
+    current_position = file.file.tell()
+    file.file.seek(0, 2)
+    size = file.file.tell()
+    file.file.seek(current_position)
+    return size
 
 
 @router.post("", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
@@ -99,6 +108,12 @@ def import_tickets(
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             detail=f"Unsupported file type '{content_type}'. Use CSV, JSON, or XML.",
+        )
+
+    if _get_upload_size(file) > MAX_IMPORT_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"Uploaded file is too large. Maximum allowed size is {MAX_IMPORT_BYTES} bytes.",
         )
 
     raw = file.file.read()
