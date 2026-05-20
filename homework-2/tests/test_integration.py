@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from src.routers import tickets as tickets_router
 from src.models.ticket import TicketCreate
+from src.routers import tickets as tickets_router
 from src.services import ticket_service
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
