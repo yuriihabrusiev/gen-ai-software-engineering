@@ -1,9 +1,12 @@
 import json
 import time
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 
 from src.services import classification_service, import_service
+
+FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
 def test_classifies_100_tickets_quickly() -> None:
@@ -48,6 +51,26 @@ def test_parse_100_csv_tickets_quickly() -> None:
     assert time.perf_counter() - start < 1.0
     assert len(tickets) == 100
     assert errors == []
+
+
+def test_sample_fixtures_have_required_sizes_and_parse_quickly() -> None:
+    start = time.perf_counter()
+
+    csv_tickets, csv_errors = import_service.parse_csv(
+        (FIXTURES_DIR / "sample_tickets.csv").read_bytes()
+    )
+    json_tickets, json_errors = import_service.parse_json(
+        (FIXTURES_DIR / "sample_tickets.json").read_bytes()
+    )
+    xml_tickets, xml_errors = import_service.parse_xml(
+        (FIXTURES_DIR / "sample_tickets.xml").read_bytes()
+    )
+
+    assert time.perf_counter() - start < 1.0
+    assert (len(csv_tickets), len(json_tickets), len(xml_tickets)) == (50, 20, 30)
+    assert csv_errors == []
+    assert json_errors == []
+    assert xml_errors == []
 
 
 def test_create_50_tickets_quickly(client: TestClient, minimal_ticket_payload: dict) -> None:

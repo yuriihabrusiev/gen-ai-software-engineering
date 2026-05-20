@@ -195,6 +195,9 @@ The classification is also applied to the stored ticket.
 
 `POST /tickets/import`
 
+Optional query parameter: `auto_classify=true` applies the keyword classifier to each
+successfully imported ticket before returning the import summary.
+
 CSV:
 
 ```bash
@@ -214,6 +217,13 @@ XML:
 ```bash
 curl -X POST "http://127.0.0.1:8000/tickets/import" \
   -F "file=@tests/fixtures/sample_tickets.xml;type=application/xml"
+```
+
+CSV with auto-classification:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/tickets/import?auto_classify=true" \
+  -F "file=@tests/fixtures/sample_tickets.csv;type=text/csv"
 ```
 
 Success:

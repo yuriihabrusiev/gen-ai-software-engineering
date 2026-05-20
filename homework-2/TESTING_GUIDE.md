@@ -42,7 +42,9 @@ mise run lint
 tests/
 ├── conftest.py
 ├── fixtures/
+│   ├── invalid_tickets.csv
 │   ├── invalid_tickets.json
+│   ├── invalid_tickets.xml
 │   ├── sample_tickets.csv
 │   ├── sample_tickets.json
 │   └── sample_tickets.xml
@@ -86,6 +88,9 @@ uv run pytest --cov=src --cov-report=term-missing --cov-fail-under=85
 - Import an unsupported file type and confirm `415 Unsupported Media Type`.
 - Run `POST /tickets/{id}/auto-classify` and confirm category, priority, confidence, reasoning, and keywords.
 - Create a ticket with `auto_classify=true` and confirm classification fields are persisted.
+- Import tickets with `auto_classify=true` and confirm classification fields are persisted.
+- Filter imported records by combined `category` and `priority` query parameters.
+- Exercise concurrent creation with 20 or more simultaneous requests.
 
 ## Performance Benchmarks
 
@@ -101,5 +106,6 @@ uv run pytest --cov=src --cov-report=term-missing --cov-fail-under=85
 
 - Tests use local SQLite state prepared by the test fixtures.
 - Fixture files under `tests/fixtures/` are the source of truth for import scenarios.
+- `sample_tickets.csv`, `sample_tickets.json`, and `sample_tickets.xml` contain 50, 20, and 30 valid records respectively.
 - API tests should assert both status codes and response bodies, especially for validation and partial import failures.
 - Classifier tests should verify keywords, category, priority, confidence range, and persistence behavior separately.

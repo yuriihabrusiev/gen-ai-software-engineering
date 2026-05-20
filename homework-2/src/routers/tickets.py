@@ -83,7 +83,10 @@ def auto_classify_ticket(ticket_id: str) -> ClassificationResult:
 
 
 @router.post("/import", response_model=ImportSummary, status_code=status.HTTP_200_OK)
-def import_tickets(file: UploadFile) -> ImportSummary:
+def import_tickets(
+    file: UploadFile,
+    auto_classify: bool = Query(False, description="Auto-classify imported tickets"),
+) -> ImportSummary:
     content_type = (file.content_type or "").split(";")[0].strip().lower()
 
     # Fall back to filename extension when content-type is generic
@@ -110,7 +113,10 @@ def import_tickets(file: UploadFile) -> ImportSummary:
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
-    for ticket in tickets:
-        ticket_service.create_ticket(ticket)
+    for ticket_data in tickets:
+        ticket = ticket_service.create_ticket(ticket_data)
+        if auto_classify:
+            result = classification_service.classify(ticket.subject, ticket.description)
+            ticket_service.apply_classification(ticket.id, result)
 
     return import_service.build_summary(tickets, errors)

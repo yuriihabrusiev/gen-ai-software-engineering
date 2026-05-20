@@ -1,6 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 from fastapi.testclient import TestClient
+
+FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
 def test_complete_ticket_lifecycle(client: TestClient, ticket_payload: dict) -> None:
@@ -31,6 +34,31 @@ def test_bulk_import_then_filter(client: TestClient) -> None:
     assert imported.json()["successful"] == 2
     assert len(filtered.json()) == 1
     assert filtered.json()[0]["customer_id"] == "c2"
+
+
+def test_bulk_import_with_auto_classification_verification(client: TestClient) -> None:
+    content = (
+        "customer_id,customer_email,customer_name,subject,description\n"
+        "c1,a@example.com,Ada,Production down login,"
+        "Critical login failure means users cannot access their account\n"
+        "c2,b@example.com,Bob,Feature idea,"
+        "Suggestion to please add a nice to have dashboard export\n"
+    )
+
+    imported = client.post(
+        "/tickets/import?auto_classify=true",
+        files={"file": ("tickets.csv", content, "text/csv")},
+    )
+    urgent = client.get("/tickets?category=account_access&priority=urgent").json()
+    low = client.get("/tickets?category=feature_request&priority=low").json()
+
+    assert imported.status_code == 200
+    assert imported.json() == {"total": 2, "successful": 2, "failed": 0, "errors": []}
+    assert len(urgent) == 1
+    assert urgent[0]["classification_confidence"] is not None
+    assert urgent[0]["classification_confidence"] > 0
+    assert len(low) == 1
+    assert low[0]["classification_confidence"] is not None
 
 
 def test_bulk_import_with_partial_failure_keeps_valid_records(client: TestClient) -> None:
@@ -77,7 +105,10 @@ def test_auto_classify_on_creation_then_manual_override(
     assert updated.json()["priority"] == "low"
 
 
-def test_concurrent_ticket_creation(client: TestClient, minimal_ticket_payload: dict) -> None:
+def test_concurrent_ticket_creation_20_plus_requests(
+    client: TestClient,
+    minimal_ticket_payload: dict,
+) -> None:
     def create_ticket(index: int) -> int:
         payload = minimal_ticket_payload | {
             "customer_id": f"cust-{index}",
@@ -86,10 +117,29 @@ def test_concurrent_ticket_creation(client: TestClient, minimal_ticket_payload: 
         return client.post("/tickets", json=payload).status_code
 
     with ThreadPoolExecutor(max_workers=5) as executor:
-        statuses = list(executor.map(create_ticket, range(20)))
+        statuses = list(executor.map(create_ticket, range(25)))
 
-    assert statuses == [201] * 20
-    assert len(client.get("/tickets").json()) == 20
+    assert statuses == [201] * 25
+    assert len(client.get("/tickets").json()) == 25
+
+
+def test_combined_filtering_by_category_and_priority(client: TestClient) -> None:
+    sample_csv = (FIXTURES_DIR / "sample_tickets.csv").read_bytes()
+
+    imported = client.post(
+        "/tickets/import",
+        files={"file": ("sample_tickets.csv", sample_csv, "text/csv")},
+    )
+    filtered = client.get("/tickets?category=account_access&priority=urgent")
+
+    assert imported.status_code == 200
+    assert imported.json()["successful"] == 50
+    assert filtered.status_code == 200
+    assert len(filtered.json()) == 9
+    assert all(
+        ticket["category"] == "account_access" and ticket["priority"] == "urgent"
+        for ticket in filtered.json()
+    )
 
 
 def test_import_xml_end_to_end(client: TestClient) -> None:

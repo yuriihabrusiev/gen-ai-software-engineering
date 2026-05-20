@@ -41,7 +41,7 @@ The schema is defined in `src/database.py`. If the schema changes during local d
 | `415 Unsupported Media Type` on import | Multipart content type or extension is not CSV, JSON, or XML | Set the upload content type or use a supported filename extension |
 | `400 Bad Request` on import | Malformed JSON or XML | Validate the file syntax before retrying |
 | `422 Unprocessable Entity` | Request body failed Pydantic validation | Check required fields, email format, lengths, and enum values |
-| Missing `classification_confidence` | Ticket has not been auto-classified | Call `POST /tickets/{id}/auto-classify` or create with `auto_classify=true` |
+| Missing `classification_confidence` | Ticket has not been auto-classified | Call `POST /tickets/{id}/auto-classify`, create with `auto_classify=true`, or import with `auto_classify=true` |
 
 ## Release Checklist
 
