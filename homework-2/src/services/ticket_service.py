@@ -45,7 +45,8 @@ def create_ticket(data: TicketCreate) -> TicketResponse:
         )
 
     ticket = get_ticket(ticket_id)
-    assert ticket is not None, "Ticket was just inserted and must exist"
+    if ticket is None:
+        raise RuntimeError(f"Inserted ticket {ticket_id} could not be fetched")
     return ticket
 
 

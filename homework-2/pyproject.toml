@@ -1,10 +1,11 @@
 [project]
 name = "homework-2"
 version = "0.1.0"
-description = "Add your description here"
+description = "FastAPI customer support ticket API with multi-format import and classification"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "defusedxml>=0.7.1",
     "fastapi[standard]>=0.136.1",
 ]
 
@@ -22,7 +23,7 @@ target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]
-ignore = ["S101", "S314", "B008"]  # assert in tests; ET.fromstring guarded; FastAPI Query() pattern
+ignore = ["S101", "B008"]  # assert in tests; FastAPI Query() pattern
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

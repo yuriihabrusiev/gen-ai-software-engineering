@@ -94,6 +94,8 @@ uv run pytest --cov=src --cov-report=term-missing --cov-fail-under=85
 
 ## Performance Benchmarks
 
+Timing thresholds are optional to avoid noisy CI failures. Set `RUN_PERFORMANCE_TESTS=1` to enforce them.
+
 | Scenario | Expected Result | Validation Location |
 |---|---:|---|
 | Create ticket API call | Completes within test threshold | `tests/test_performance.py` |

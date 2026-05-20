@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import cast
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, model_validator
 
 
 class Category(StrEnum):
@@ -74,6 +75,34 @@ class TicketUpdate(BaseModel):
     assigned_to: str | None = None
     tags: list[str] | None = None
     metadata: TicketMetadata | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def reject_null_non_nullable_fields(cls, data: object) -> object:
+        if not isinstance(data, dict):
+            return data
+
+        update_data = cast("dict[str, object | None]", data)
+        non_nullable_fields = {
+            "customer_id",
+            "customer_email",
+            "customer_name",
+            "subject",
+            "description",
+            "priority",
+            "status",
+            "tags",
+        }
+        null_fields = sorted(
+            field
+            for field in non_nullable_fields
+            if field in update_data and update_data[field] is None
+        )
+        if null_fields:
+            fields = ", ".join(null_fields)
+            raise ValueError(f"Field(s) cannot be null: {fields}")
+
+        return data
 
 
 class TicketResponse(BaseModel):

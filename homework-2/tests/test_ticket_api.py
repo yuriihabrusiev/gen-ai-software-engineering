@@ -84,6 +84,17 @@ def test_update_ticket_partial_fields(client: TestClient, ticket_payload: dict) 
     assert body["assigned_to"] == "agent-2"
 
 
+def test_update_rejects_null_for_non_nullable_fields(
+    client: TestClient, ticket_payload: dict
+) -> None:
+    ticket_id = client.post("/tickets", json=ticket_payload).json()["id"]
+
+    for field in ("customer_id", "priority", "status", "tags"):
+        response = client.put(f"/tickets/{ticket_id}", json={field: None})
+
+        assert response.status_code == 422
+
+
 def test_update_missing_ticket_returns_404(client: TestClient) -> None:
     response = client.put("/tickets/missing", json={"status": "closed"})
 

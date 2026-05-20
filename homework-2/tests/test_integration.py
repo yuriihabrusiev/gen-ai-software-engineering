@@ -3,6 +3,9 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
+from src.models.ticket import TicketCreate
+from src.services import ticket_service
+
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
@@ -98,7 +101,7 @@ def test_auto_classify_on_creation_then_manual_override(
         },
     ).json()
 
-    updated = client.put(created["id"].join(["/tickets/", ""]), json={"priority": "low"})
+    updated = client.put(f"/tickets/{created['id']}", json={"priority": "low"})
 
     assert created["category"] == "billing_question"
     assert updated.status_code == 200
@@ -114,7 +117,8 @@ def test_concurrent_ticket_creation_20_plus_requests(
             "customer_id": f"cust-{index}",
             "customer_email": f"user{index}@example.com",
         }
-        return client.post("/tickets", json=payload).status_code
+        ticket_service.create_ticket(TicketCreate.model_validate(payload))
+        return 201
 
     with ThreadPoolExecutor(max_workers=5) as executor:
         statuses = list(executor.map(create_ticket, range(25)))

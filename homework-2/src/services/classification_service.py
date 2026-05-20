@@ -117,6 +117,7 @@ _PRIORITY_KEYWORDS: dict[Priority, list[str]] = {
         "low priority",
         "whenever",
         "not urgent",
+        "suggestion",
         "trivial",
     ],
 }

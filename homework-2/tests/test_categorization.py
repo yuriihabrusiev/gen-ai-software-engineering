@@ -68,6 +68,12 @@ def test_low_priority_keywords() -> None:
     assert result.priority == Priority.low
 
 
+def test_suggestion_sets_low_priority() -> None:
+    result = classification_service.classify("Suggestion", "Please add dark mode.")
+
+    assert result.priority == Priority.low
+
+
 def test_confidence_increases_with_more_keywords() -> None:
     weak = classification_service.classify("Login", "A valid description without much else.")
     strong = classification_service.classify(

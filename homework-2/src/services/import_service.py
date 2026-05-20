@@ -3,12 +3,22 @@
 import csv
 import io
 import json
-import xml.etree.ElementTree as ET
 from typing import Any, cast
+from xml.etree.ElementTree import Element
 
+import defusedxml.ElementTree as ET
+from defusedxml.common import DefusedXmlException
 from pydantic import ValidationError
 
 from src.models.ticket import ImportError, ImportSummary, TicketCreate
+
+MAX_XML_IMPORT_BYTES = 2 * 1024 * 1024
+
+
+def _require_error(error: ImportError | None) -> ImportError:
+    if error is None:
+        raise RuntimeError("Parser returned neither a ticket nor an import error")
+    return error
 
 
 def _parse_row(raw: dict[str, Any], row_num: int) -> tuple[TicketCreate | None, ImportError | None]:
@@ -60,8 +70,7 @@ def parse_csv(content: bytes) -> tuple[list[TicketCreate], list[ImportError]]:
         if ticket:
             tickets.append(ticket)
         else:
-            assert error is not None
-            errors.append(error)
+            errors.append(_require_error(error))
 
     return tickets, errors
 
@@ -86,13 +95,12 @@ def parse_json(content: bytes) -> tuple[list[TicketCreate], list[ImportError]]:
         if ticket:
             tickets.append(ticket)
         else:
-            assert error is not None
-            errors.append(error)
+            errors.append(_require_error(error))
 
     return tickets, errors
 
 
-def _elem_to_dict(elem: ET.Element) -> dict[str, Any]:
+def _elem_to_dict(elem: Element) -> dict[str, Any]:
     """Convert a <ticket> XML element to a flat dict, with nested <metadata> and <tags>."""
     result: dict[str, Any] = {}
     for child in elem:
@@ -113,9 +121,12 @@ def parse_xml(content: bytes) -> tuple[list[TicketCreate], list[ImportError]]:
     tickets: list[TicketCreate] = []
     errors: list[ImportError] = []
 
+    if len(content) > MAX_XML_IMPORT_BYTES:
+        raise ValueError("XML file is too large")
+
     try:
-        root = ET.fromstring(content)  # noqa: S314
-    except ET.ParseError as exc:
+        root = ET.fromstring(content)
+    except (ET.ParseError, DefusedXmlException) as exc:
         raise ValueError(f"Invalid XML: {exc}") from exc
 
     # Accept <tickets> root or bare <ticket> list
@@ -127,8 +138,7 @@ def parse_xml(content: bytes) -> tuple[list[TicketCreate], list[ImportError]]:
         if ticket:
             tickets.append(ticket)
         else:
-            assert error is not None
-            errors.append(error)
+            errors.append(_require_error(error))
 
     return tickets, errors
 

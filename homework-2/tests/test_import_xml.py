@@ -35,6 +35,23 @@ def test_parse_xml_rejects_malformed_xml() -> None:
         import_service.parse_xml(b"<tickets><ticket></tickets>")
 
 
+def test_parse_xml_rejects_entities() -> None:
+    xml = b"""<?xml version="1.0"?>
+    <!DOCTYPE tickets [<!ENTITY payload "blocked">]>
+    <tickets><ticket>&payload;</ticket></tickets>
+    """
+
+    with pytest.raises(ValueError, match="Invalid XML"):
+        import_service.parse_xml(xml)
+
+
+def test_parse_xml_rejects_large_payload() -> None:
+    content = b" " * (import_service.MAX_XML_IMPORT_BYTES + 1)
+
+    with pytest.raises(ValueError, match="XML file is too large"):
+        import_service.parse_xml(content)
+
+
 def test_parse_xml_reports_validation_error() -> None:
     xml = """
     <tickets><ticket>
