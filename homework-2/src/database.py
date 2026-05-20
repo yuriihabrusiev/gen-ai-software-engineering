@@ -42,10 +42,13 @@ def init_db() -> None:
     with get_conn() as conn:
         conn.executescript(DDL)
         # Migrate existing DBs that predate the classification_confidence column
-        try:
-            conn.execute("ALTER TABLE tickets ADD COLUMN classification_confidence REAL")
-        except sqlite3.OperationalError:
-            pass  # column already exists
+        columns = {
+            row["name"] for row in conn.execute("PRAGMA table_info(tickets)").fetchall()
+        }
+        if "classification_confidence" not in columns:
+            conn.execute(
+                "ALTER TABLE tickets ADD COLUMN classification_confidence REAL"
+            )
 
 
 def row_to_dict(row: sqlite3.Row) -> dict:
