@@ -110,6 +110,11 @@ def import_tickets(
             tickets, errors = import_service.parse_json(raw)
         else:
             tickets, errors = import_service.parse_xml(raw)
+    except UnicodeDecodeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file must be valid UTF-8.",
+        ) from exc
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
