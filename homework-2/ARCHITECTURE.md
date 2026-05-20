@@ -96,7 +96,7 @@ sequenceDiagram
 
 - Pydantic validates email format, enum values, subject length, and description length.
 - SQL statements use parameter binding for user-controlled values.
-- XML parsing uses the standard library and does not resolve external entities, but production systems should prefer hardened XML tooling and strict file-size limits.
+- XML parsing uses `defusedxml` and rejects oversized XML imports before parsing.
 - The API currently has no authentication. Do not expose it publicly without adding identity, authorization, rate limiting, and transport security.
 - Uploaded files are parsed in memory and are not written to disk.
 

@@ -122,6 +122,10 @@ _PRIORITY_KEYWORDS: dict[Priority, list[str]] = {
     ],
 }
 
+_PRIORITY_OVERRIDES: dict[Priority, list[str]] = {
+    Priority.low: ["not urgent"],
+}
+
 
 # ---------------------------------------------------------------------------
 # Confidence formula
@@ -168,12 +172,19 @@ def classify(subject: str, description: str) -> ClassificationResult:
     priority_keywords_found: list[str] = []
     best_priority = Priority.medium
 
-    for priority in (Priority.urgent, Priority.high, Priority.low):
-        matched = [kw for kw in _PRIORITY_KEYWORDS[priority] if kw in text]
+    for priority, keywords in _PRIORITY_OVERRIDES.items():
+        matched = [kw for kw in keywords if kw in text]
         if matched:
             best_priority = priority
             priority_keywords_found = matched
             break
+    else:
+        for priority in (Priority.urgent, Priority.high, Priority.low):
+            matched = [kw for kw in _PRIORITY_KEYWORDS[priority] if kw in text]
+            if matched:
+                best_priority = priority
+                priority_keywords_found = matched
+                break
 
     pri_confidence = _confidence(len(priority_keywords_found)) if priority_keywords_found else 0.5
 

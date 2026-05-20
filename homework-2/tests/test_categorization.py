@@ -68,6 +68,12 @@ def test_low_priority_keywords() -> None:
     assert result.priority == Priority.low
 
 
+def test_not_urgent_stays_low_priority() -> None:
+    result = classification_service.classify("Question", "This is not urgent.")
+
+    assert result.priority == Priority.low
+
+
 def test_suggestion_sets_low_priority() -> None:
     result = classification_service.classify("Suggestion", "Please add dark mode.")
 

@@ -96,10 +96,6 @@ def update_ticket(ticket_id: str, data: TicketUpdate) -> TicketResponse | None:
 
     updates["updated_at"] = _now()
 
-    # Handle status transition to resolved
-    if updates.get("status") == "resolved" and existing.resolved_at is None:
-        updates["resolved_at"] = updates["updated_at"]
-
     # Serialize nested types
     if "tags" in updates:
         updates["tags"] = json.dumps(updates["tags"])
@@ -112,6 +108,10 @@ def update_ticket(ticket_id: str, data: TicketUpdate) -> TicketResponse | None:
         if enum_field in updates and updates[enum_field] is not None:
             val = updates[enum_field]
             updates[enum_field] = val.value if hasattr(val, "value") else val
+
+    # Handle status transition to resolved
+    if updates.get("status") == "resolved" and existing.resolved_at is None:
+        updates["resolved_at"] = updates["updated_at"]
 
     set_clause = ", ".join(f"{k} = ?" for k in updates)
     values = list(updates.values()) + [ticket_id]

@@ -82,7 +82,7 @@ class TicketUpdate(BaseModel):
         if not isinstance(data, dict):
             return data
 
-        update_data = cast("dict[str, object | None]", data)
+        update_data = cast(dict[str, object | None], data)
         non_nullable_fields = {
             "customer_id",
             "customer_email",
