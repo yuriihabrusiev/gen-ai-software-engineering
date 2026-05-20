@@ -3,7 +3,7 @@ import uuid
 from datetime import UTC, datetime
 
 from src.database import get_conn, row_to_dict
-from src.models.ticket import TicketCreate, TicketResponse, TicketUpdate
+from src.models.ticket import ClassificationResult, TicketCreate, TicketResponse, TicketUpdate
 
 
 def _now() -> str:
@@ -128,3 +128,26 @@ def delete_ticket(ticket_id: str) -> bool:
     with get_conn() as conn:
         result = conn.execute("DELETE FROM tickets WHERE id = ?", (ticket_id,))
     return result.rowcount > 0
+
+
+def apply_classification(ticket_id: str, result: ClassificationResult) -> TicketResponse | None:
+    """Apply auto-classification results to a ticket and return the updated ticket."""
+    with get_conn() as conn:
+        rowcount = conn.execute(
+            """
+            UPDATE tickets
+            SET category = ?, priority = ?, classification_confidence = ?, updated_at = ?
+            WHERE id = ?
+            """,
+            (
+                result.category.value,
+                result.priority.value,
+                result.confidence,
+                _now(),
+                ticket_id,
+            ),
+        ).rowcount
+
+    if rowcount == 0:
+        return None
+    return get_ticket(ticket_id)

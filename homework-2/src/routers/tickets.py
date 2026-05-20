@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, UploadFile, status
 
 from src.models.ticket import (
     Category,
+    ClassificationResult,
     ImportSummary,
     Priority,
     Status,
@@ -9,7 +10,7 @@ from src.models.ticket import (
     TicketResponse,
     TicketUpdate,
 )
-from src.services import import_service, ticket_service
+from src.services import classification_service, import_service, ticket_service
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
 
@@ -22,8 +23,17 @@ _SUPPORTED_CONTENT_TYPES = {
 
 
 @router.post("", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
-def create_ticket(data: TicketCreate) -> TicketResponse:
-    return ticket_service.create_ticket(data)
+def create_ticket(
+    data: TicketCreate,
+    auto_classify: bool = Query(False, description="Auto-classify the ticket on creation"),
+) -> TicketResponse:
+    ticket = ticket_service.create_ticket(data)
+    if auto_classify:
+        result = classification_service.classify(ticket.subject, ticket.description)
+        updated = ticket_service.apply_classification(ticket.id, result)
+        if updated is not None:
+            ticket = updated
+    return ticket
 
 
 @router.get("", response_model=list[TicketResponse])
@@ -60,6 +70,16 @@ def delete_ticket(ticket_id: str) -> None:
     deleted = ticket_service.delete_ticket(ticket_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
+
+
+@router.post("/{ticket_id}/auto-classify", response_model=ClassificationResult)
+def auto_classify_ticket(ticket_id: str) -> ClassificationResult:
+    ticket = ticket_service.get_ticket(ticket_id)
+    if ticket is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
+    result = classification_service.classify(ticket.subject, ticket.description)
+    ticket_service.apply_classification(ticket_id, result)
+    return result
 
 
 @router.post("/import", response_model=ImportSummary, status_code=status.HTTP_200_OK)

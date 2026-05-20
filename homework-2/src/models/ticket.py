@@ -92,8 +92,17 @@ class TicketResponse(BaseModel):
     assigned_to: str | None = None
     tags: list[str]
     metadata: TicketMetadata | None = None
+    classification_confidence: float | None = None
 
     model_config = {"from_attributes": True}
+
+
+class ClassificationResult(BaseModel):
+    category: Category
+    priority: Priority
+    confidence: float = Field(..., ge=0.0, le=1.0)
+    reasoning: str
+    keywords_found: list[str]
 
 
 class ImportError(BaseModel):

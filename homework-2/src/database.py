@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS tickets (
     resolved_at  TEXT,
     assigned_to  TEXT,
     tags         TEXT NOT NULL DEFAULT '[]',
-    metadata     TEXT
+    metadata     TEXT,
+    classification_confidence REAL
 );
 """
 
@@ -40,6 +41,11 @@ def get_conn():
 def init_db() -> None:
     with get_conn() as conn:
         conn.executescript(DDL)
+        # Migrate existing DBs that predate the classification_confidence column
+        try:
+            conn.execute("ALTER TABLE tickets ADD COLUMN classification_confidence REAL")
+        except sqlite3.OperationalError:
+            pass  # column already exists
 
 
 def row_to_dict(row: sqlite3.Row) -> dict:
