@@ -1,0 +1,23 @@
+[tools]
+uv = "latest"
+python = "3.14"
+
+[tasks.dev]
+description = "Start the development server with hot reload"
+run = "uv run uvicorn src.main:app --reload"
+
+[tasks.lint]
+description = "Check code with ruff (lint + format) and ty"
+run = [
+  "uv run ruff check src/",
+  "uv run ruff format --check src/",
+  "uv run ty check src/",
+]
+
+[tasks."lint:fix"]
+description = "Auto-fix lint issues, apply formatting, and type-check"
+run = [
+  "uv run ruff check src/ --fix",
+  "uv run ruff format src/",
+  "uv run ty check src/",
+]
