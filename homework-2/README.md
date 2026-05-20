@@ -1,4 +1,10 @@
-# Customer Support Ticket API
+# 🎧 Homework 2: Customer Support Ticket API
+
+> **Student Name**: Yurii Habrusiev
+> **Date Submitted**: 2026-05-21
+> **AI Tools Used**: GitHub Copilot CLI, OpenCode, Codex CLI and Zedl; Claude Haiku 4.5 and Sonnet 4.6, GPT-5.5
+
+---
 
 FastAPI service for managing customer support tickets. The API supports CRUD operations, CSV/JSON/XML bulk import, keyword-based auto-classification, filtering, SQLite persistence, and a pytest suite for endpoint, parser, integration, and performance coverage.
 
@@ -120,3 +126,9 @@ homework-2/
 ## AI Documentation Strategy
 
 The documentation was structured as if different model strengths were assigned by audience: a concise implementation-focused model for the README, a contract-focused model for the API reference, an architecture reasoning model for design documentation, a QA-focused model for the testing guide, and an operations-focused model for the runbook.
+
+<div align="center">
+
+*This project was completed as part of the AI-Assisted Development course.*
+
+</div>
