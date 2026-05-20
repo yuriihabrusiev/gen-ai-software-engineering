@@ -78,6 +78,7 @@ mise run lint       # final check — must pass with zero errors
 | `PUT` | `/tickets/{id}` | Partial update (404 if missing) |
 | `DELETE` | `/tickets/{id}` | Delete ticket (204, 404 if missing) |
 | `POST` | `/tickets/import` | Bulk import from CSV / JSON / XML file |
+| `POST` | `/tickets/{id}/auto-classify` | Auto-classify ticket by category and priority |
 
 Interactive docs available at `http://localhost:8000/docs` when the dev server is running.
 

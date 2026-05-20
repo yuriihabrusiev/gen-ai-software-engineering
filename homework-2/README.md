@@ -2,7 +2,7 @@
 
 > **Student Name**: Yurii Habrusiev
 > **Date Submitted**: 2026-05-21
-> **AI Tools Used**: GitHub Copilot CLI, OpenCode, Codex CLI and Zedl; Claude Haiku 4.5 and Sonnet 4.6, GPT-5.5
+> **AI Tools Used**: GitHub Copilot CLI, OpenCode, Codex CLI and Zed; Claude Haiku 4.5 and Sonnet 4.6, GPT-5.5
 
 ---
 

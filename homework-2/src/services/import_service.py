@@ -41,7 +41,7 @@ def _parse_row(raw: dict[str, Any], row_num: int) -> tuple[TicketCreate | None, 
             try:
                 raw["metadata"] = json.loads(meta_str)
             except json.JSONDecodeError:
-                raw["metadata"] = None
+                return None, ImportError(row=row_num, error="metadata: invalid JSON string")
         else:
             raw["metadata"] = None
 
