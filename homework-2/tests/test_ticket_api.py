@@ -1,5 +1,7 @@
 from fastapi.testclient import TestClient
 
+from src import database
+
 
 def test_create_ticket_returns_201(client: TestClient, ticket_payload: dict) -> None:
     response = client.post("/tickets", json=ticket_payload)
@@ -149,6 +151,23 @@ def test_import_endpoint_accepts_csv_upload(client: TestClient) -> None:
     assert len(client.get("/tickets").json()) == 1
 
 
+def test_import_csv_normalizes_empty_nullable_fields(client: TestClient) -> None:
+    content = (
+        "customer_id,customer_email,customer_name,subject,description,assigned_to,category\n"
+        "c1,a@example.com,Ada,Login problem,I cannot access my account now,,\n"
+    )
+
+    response = client.post(
+        "/tickets/import",
+        files={"file": ("tickets.csv", content, "text/csv")},
+    )
+
+    assert response.status_code == 200
+    ticket = client.get("/tickets").json()[0]
+    assert ticket["assigned_to"] is None
+    assert ticket["category"] is None
+
+
 def test_import_endpoint_rejects_unsupported_file_type(client: TestClient) -> None:
     response = client.post(
         "/tickets/import",
@@ -184,3 +203,12 @@ def test_auto_classify_missing_ticket_returns_404(client: TestClient) -> None:
     response = client.post("/tickets/missing/auto-classify")
 
     assert response.status_code == 404
+
+
+def test_get_conn_enables_concurrent_write_pragmas() -> None:
+    with database.get_conn() as conn:
+        busy_timeout = conn.execute("PRAGMA busy_timeout").fetchone()[0]
+        journal_mode = conn.execute("PRAGMA journal_mode").fetchone()[0]
+
+    assert busy_timeout >= 30000
+    assert journal_mode.lower() == "wal"

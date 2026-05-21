@@ -34,6 +34,10 @@ def _parse_row(raw: dict[str, Any], row_num: int) -> tuple[TicketCreate | None, 
         else:
             raw["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()] if tags_str else []
 
+    for field in ("assigned_to", "category"):
+        if raw.get(field) == "":
+            raw[field] = None
+
     # Coerce metadata: accept JSON string
     if "metadata" in raw and isinstance(raw["metadata"], str):
         meta_str = raw["metadata"].strip()

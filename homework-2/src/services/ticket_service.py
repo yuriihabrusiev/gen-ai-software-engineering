@@ -3,7 +3,13 @@ import uuid
 from datetime import UTC, datetime
 
 from src.database import get_conn, row_to_dict
-from src.models.ticket import ClassificationResult, TicketCreate, TicketResponse, TicketUpdate
+from src.models.ticket import (
+    ClassificationResult,
+    Status,
+    TicketCreate,
+    TicketResponse,
+    TicketUpdate,
+)
 
 
 def _now() -> str:
@@ -110,7 +116,7 @@ def update_ticket(ticket_id: str, data: TicketUpdate) -> TicketResponse | None:
             updates[enum_field] = val.value if hasattr(val, "value") else val
 
     # Handle status transition to resolved
-    if updates.get("status") == "resolved" and existing.resolved_at is None:
+    if updates.get("status") == Status.resolved and existing.resolved_at is None:
         updates["resolved_at"] = updates["updated_at"]
 
     set_clause = ", ".join(f"{k} = ?" for k in updates)
