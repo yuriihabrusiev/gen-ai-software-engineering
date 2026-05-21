@@ -116,7 +116,8 @@ def update_ticket(ticket_id: str, data: TicketUpdate) -> TicketResponse | None:
             updates[enum_field] = val.value if hasattr(val, "value") else val
 
     # Handle status transition to resolved
-    if updates.get("status") == Status.resolved and existing.resolved_at is None:
+    status_update = updates.get("status")
+    if status_update == Status.resolved.value and existing.resolved_at is None:
         updates["resolved_at"] = updates["updated_at"]
 
     set_clause = ", ".join(f"{k} = ?" for k in updates)
