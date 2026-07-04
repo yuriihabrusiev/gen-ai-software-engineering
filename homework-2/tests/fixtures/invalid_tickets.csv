@@ -1,0 +1,2 @@
+customer_id,customer_email,customer_name,subject,description
+bad-001,not-an-email,Bad User,No,short

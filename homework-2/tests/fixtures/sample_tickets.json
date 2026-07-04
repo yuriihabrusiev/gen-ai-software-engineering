@@ -1,0 +1,399 @@
+[
+  {
+    "customer_id": "cust-001",
+    "customer_email": "customer001@example.com",
+    "customer_name": "Sample Customer 001",
+    "subject": "Login blocked #001",
+    "description": "I cannot access my account after a password reset and 2FA login fails. Ticket sample number 001 includes enough detail for validation.",
+    "category": "account_access",
+    "priority": "urgent",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "login",
+      "password"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-002",
+    "customer_email": "customer002@example.com",
+    "customer_name": "Sample Customer 002",
+    "subject": "Checkout error #002",
+    "description": "The checkout page shows an error and the app is not working for our team. Ticket sample number 002 includes enough detail for validation.",
+    "category": "technical_issue",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "error",
+      "checkout"
+    ],
+    "metadata": {
+      "source": "chat",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-003",
+    "customer_email": "customer003@example.com",
+    "customer_name": "Sample Customer 003",
+    "subject": "Invoice question #003",
+    "description": "Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 003 includes enough detail for validation.",
+    "category": "billing_question",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "billing",
+      "invoice"
+    ],
+    "metadata": {
+      "source": "email",
+      "browser": "Safari",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "cust-004",
+    "customer_email": "customer004@example.com",
+    "customer_name": "Sample Customer 004",
+    "subject": "Feature suggestion #004",
+    "description": "Suggestion to please add export filters as a nice to have improvement. Ticket sample number 004 includes enough detail for validation.",
+    "category": "feature_request",
+    "priority": "low",
+    "status": "new",
+    "assigned_to": "support-agent-1",
+    "tags": [
+      "feature",
+      "suggestion"
+    ],
+    "metadata": {
+      "source": "api",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-005",
+    "customer_email": "customer005@example.com",
+    "customer_name": "Sample Customer 005",
+    "subject": "Report regression #005",
+    "description": "Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 005 includes enough detail for validation.",
+    "category": "bug_report",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "bug",
+      "regression"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "tablet"
+    }
+  },
+  {
+    "customer_id": "cust-006",
+    "customer_email": "customer006@example.com",
+    "customer_name": "Sample Customer 006",
+    "subject": "General question #006",
+    "description": "I have a general support question about how to configure my workspace. Ticket sample number 006 includes enough detail for validation.",
+    "category": "other",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "general"
+    ],
+    "metadata": {
+      "source": "phone",
+      "browser": null,
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-007",
+    "customer_email": "customer007@example.com",
+    "customer_name": "Sample Customer 007",
+    "subject": "Login blocked #007",
+    "description": "I cannot access my account after a password reset and 2FA login fails. Ticket sample number 007 includes enough detail for validation.",
+    "category": "account_access",
+    "priority": "urgent",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "login",
+      "password"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-008",
+    "customer_email": "customer008@example.com",
+    "customer_name": "Sample Customer 008",
+    "subject": "Checkout error #008",
+    "description": "The checkout page shows an error and the app is not working for our team. Ticket sample number 008 includes enough detail for validation.",
+    "category": "technical_issue",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": "support-agent-1",
+    "tags": [
+      "error",
+      "checkout"
+    ],
+    "metadata": {
+      "source": "chat",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-009",
+    "customer_email": "customer009@example.com",
+    "customer_name": "Sample Customer 009",
+    "subject": "Invoice question #009",
+    "description": "Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 009 includes enough detail for validation.",
+    "category": "billing_question",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "billing",
+      "invoice"
+    ],
+    "metadata": {
+      "source": "email",
+      "browser": "Safari",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "cust-010",
+    "customer_email": "customer010@example.com",
+    "customer_name": "Sample Customer 010",
+    "subject": "Feature suggestion #010",
+    "description": "Suggestion to please add export filters as a nice to have improvement. Ticket sample number 010 includes enough detail for validation.",
+    "category": "feature_request",
+    "priority": "low",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "feature",
+      "suggestion"
+    ],
+    "metadata": {
+      "source": "api",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-011",
+    "customer_email": "customer011@example.com",
+    "customer_name": "Sample Customer 011",
+    "subject": "Report regression #011",
+    "description": "Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 011 includes enough detail for validation.",
+    "category": "bug_report",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "bug",
+      "regression"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "tablet"
+    }
+  },
+  {
+    "customer_id": "cust-012",
+    "customer_email": "customer012@example.com",
+    "customer_name": "Sample Customer 012",
+    "subject": "General question #012",
+    "description": "I have a general support question about how to configure my workspace. Ticket sample number 012 includes enough detail for validation.",
+    "category": "other",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": "support-agent-1",
+    "tags": [
+      "general"
+    ],
+    "metadata": {
+      "source": "phone",
+      "browser": null,
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-013",
+    "customer_email": "customer013@example.com",
+    "customer_name": "Sample Customer 013",
+    "subject": "Login blocked #013",
+    "description": "I cannot access my account after a password reset and 2FA login fails. Ticket sample number 013 includes enough detail for validation.",
+    "category": "account_access",
+    "priority": "urgent",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "login",
+      "password"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-014",
+    "customer_email": "customer014@example.com",
+    "customer_name": "Sample Customer 014",
+    "subject": "Checkout error #014",
+    "description": "The checkout page shows an error and the app is not working for our team. Ticket sample number 014 includes enough detail for validation.",
+    "category": "technical_issue",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "error",
+      "checkout"
+    ],
+    "metadata": {
+      "source": "chat",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-015",
+    "customer_email": "customer015@example.com",
+    "customer_name": "Sample Customer 015",
+    "subject": "Invoice question #015",
+    "description": "Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 015 includes enough detail for validation.",
+    "category": "billing_question",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "billing",
+      "invoice"
+    ],
+    "metadata": {
+      "source": "email",
+      "browser": "Safari",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "cust-016",
+    "customer_email": "customer016@example.com",
+    "customer_name": "Sample Customer 016",
+    "subject": "Feature suggestion #016",
+    "description": "Suggestion to please add export filters as a nice to have improvement. Ticket sample number 016 includes enough detail for validation.",
+    "category": "feature_request",
+    "priority": "low",
+    "status": "new",
+    "assigned_to": "support-agent-1",
+    "tags": [
+      "feature",
+      "suggestion"
+    ],
+    "metadata": {
+      "source": "api",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-017",
+    "customer_email": "customer017@example.com",
+    "customer_name": "Sample Customer 017",
+    "subject": "Report regression #017",
+    "description": "Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 017 includes enough detail for validation.",
+    "category": "bug_report",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "bug",
+      "regression"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "tablet"
+    }
+  },
+  {
+    "customer_id": "cust-018",
+    "customer_email": "customer018@example.com",
+    "customer_name": "Sample Customer 018",
+    "subject": "General question #018",
+    "description": "I have a general support question about how to configure my workspace. Ticket sample number 018 includes enough detail for validation.",
+    "category": "other",
+    "priority": "medium",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "general"
+    ],
+    "metadata": {
+      "source": "phone",
+      "browser": null,
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-019",
+    "customer_email": "customer019@example.com",
+    "customer_name": "Sample Customer 019",
+    "subject": "Login blocked #019",
+    "description": "I cannot access my account after a password reset and 2FA login fails. Ticket sample number 019 includes enough detail for validation.",
+    "category": "account_access",
+    "priority": "urgent",
+    "status": "new",
+    "assigned_to": null,
+    "tags": [
+      "login",
+      "password"
+    ],
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "cust-020",
+    "customer_email": "customer020@example.com",
+    "customer_name": "Sample Customer 020",
+    "subject": "Checkout error #020",
+    "description": "The checkout page shows an error and the app is not working for our team. Ticket sample number 020 includes enough detail for validation.",
+    "category": "technical_issue",
+    "priority": "high",
+    "status": "new",
+    "assigned_to": "support-agent-1",
+    "tags": [
+      "error",
+      "checkout"
+    ],
+    "metadata": {
+      "source": "chat",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  }
+]

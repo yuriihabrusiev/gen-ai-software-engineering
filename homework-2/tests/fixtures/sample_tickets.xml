@@ -1,0 +1,569 @@
+<tickets>
+  <ticket>
+    <customer_id>cust-001</customer_id>
+    <customer_email>customer001@example.com</customer_email>
+    <customer_name>Sample Customer 001</customer_name>
+    <subject>Login blocked #001</subject>
+    <description>I cannot access my account after a password reset and 2FA login fails. Ticket sample number 001 includes enough detail for validation.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <status>new</status>
+    <tags>
+      <tag>login</tag>
+      <tag>password</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-002</customer_id>
+    <customer_email>customer002@example.com</customer_email>
+    <customer_name>Sample Customer 002</customer_name>
+    <subject>Checkout error #002</subject>
+    <description>The checkout page shows an error and the app is not working for our team. Ticket sample number 002 includes enough detail for validation.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>error</tag>
+      <tag>checkout</tag>
+    </tags>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-003</customer_id>
+    <customer_email>customer003@example.com</customer_email>
+    <customer_name>Sample Customer 003</customer_name>
+    <subject>Invoice question #003</subject>
+    <description>Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 003 includes enough detail for validation.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>billing</tag>
+      <tag>invoice</tag>
+    </tags>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-004</customer_id>
+    <customer_email>customer004@example.com</customer_email>
+    <customer_name>Sample Customer 004</customer_name>
+    <subject>Feature suggestion #004</subject>
+    <description>Suggestion to please add export filters as a nice to have improvement. Ticket sample number 004 includes enough detail for validation.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>feature</tag>
+      <tag>suggestion</tag>
+    </tags>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-005</customer_id>
+    <customer_email>customer005@example.com</customer_email>
+    <customer_name>Sample Customer 005</customer_name>
+    <subject>Report regression #005</subject>
+    <description>Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 005 includes enough detail for validation.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>bug</tag>
+      <tag>regression</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>tablet</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-006</customer_id>
+    <customer_email>customer006@example.com</customer_email>
+    <customer_name>Sample Customer 006</customer_name>
+    <subject>General question #006</subject>
+    <description>I have a general support question about how to configure my workspace. Ticket sample number 006 includes enough detail for validation.</description>
+    <category>other</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>general</tag>
+    </tags>
+    <metadata>
+      <source>phone</source>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-007</customer_id>
+    <customer_email>customer007@example.com</customer_email>
+    <customer_name>Sample Customer 007</customer_name>
+    <subject>Login blocked #007</subject>
+    <description>I cannot access my account after a password reset and 2FA login fails. Ticket sample number 007 includes enough detail for validation.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <status>new</status>
+    <tags>
+      <tag>login</tag>
+      <tag>password</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-008</customer_id>
+    <customer_email>customer008@example.com</customer_email>
+    <customer_name>Sample Customer 008</customer_name>
+    <subject>Checkout error #008</subject>
+    <description>The checkout page shows an error and the app is not working for our team. Ticket sample number 008 includes enough detail for validation.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>error</tag>
+      <tag>checkout</tag>
+    </tags>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-009</customer_id>
+    <customer_email>customer009@example.com</customer_email>
+    <customer_name>Sample Customer 009</customer_name>
+    <subject>Invoice question #009</subject>
+    <description>Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 009 includes enough detail for validation.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>billing</tag>
+      <tag>invoice</tag>
+    </tags>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-010</customer_id>
+    <customer_email>customer010@example.com</customer_email>
+    <customer_name>Sample Customer 010</customer_name>
+    <subject>Feature suggestion #010</subject>
+    <description>Suggestion to please add export filters as a nice to have improvement. Ticket sample number 010 includes enough detail for validation.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <status>new</status>
+    <tags>
+      <tag>feature</tag>
+      <tag>suggestion</tag>
+    </tags>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-011</customer_id>
+    <customer_email>customer011@example.com</customer_email>
+    <customer_name>Sample Customer 011</customer_name>
+    <subject>Report regression #011</subject>
+    <description>Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 011 includes enough detail for validation.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>bug</tag>
+      <tag>regression</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>tablet</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-012</customer_id>
+    <customer_email>customer012@example.com</customer_email>
+    <customer_name>Sample Customer 012</customer_name>
+    <subject>General question #012</subject>
+    <description>I have a general support question about how to configure my workspace. Ticket sample number 012 includes enough detail for validation.</description>
+    <category>other</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>general</tag>
+    </tags>
+    <metadata>
+      <source>phone</source>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-013</customer_id>
+    <customer_email>customer013@example.com</customer_email>
+    <customer_name>Sample Customer 013</customer_name>
+    <subject>Login blocked #013</subject>
+    <description>I cannot access my account after a password reset and 2FA login fails. Ticket sample number 013 includes enough detail for validation.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <status>new</status>
+    <tags>
+      <tag>login</tag>
+      <tag>password</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-014</customer_id>
+    <customer_email>customer014@example.com</customer_email>
+    <customer_name>Sample Customer 014</customer_name>
+    <subject>Checkout error #014</subject>
+    <description>The checkout page shows an error and the app is not working for our team. Ticket sample number 014 includes enough detail for validation.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>error</tag>
+      <tag>checkout</tag>
+    </tags>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-015</customer_id>
+    <customer_email>customer015@example.com</customer_email>
+    <customer_name>Sample Customer 015</customer_name>
+    <subject>Invoice question #015</subject>
+    <description>Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 015 includes enough detail for validation.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>billing</tag>
+      <tag>invoice</tag>
+    </tags>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-016</customer_id>
+    <customer_email>customer016@example.com</customer_email>
+    <customer_name>Sample Customer 016</customer_name>
+    <subject>Feature suggestion #016</subject>
+    <description>Suggestion to please add export filters as a nice to have improvement. Ticket sample number 016 includes enough detail for validation.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>feature</tag>
+      <tag>suggestion</tag>
+    </tags>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-017</customer_id>
+    <customer_email>customer017@example.com</customer_email>
+    <customer_name>Sample Customer 017</customer_name>
+    <subject>Report regression #017</subject>
+    <description>Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 017 includes enough detail for validation.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>bug</tag>
+      <tag>regression</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>tablet</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-018</customer_id>
+    <customer_email>customer018@example.com</customer_email>
+    <customer_name>Sample Customer 018</customer_name>
+    <subject>General question #018</subject>
+    <description>I have a general support question about how to configure my workspace. Ticket sample number 018 includes enough detail for validation.</description>
+    <category>other</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>general</tag>
+    </tags>
+    <metadata>
+      <source>phone</source>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-019</customer_id>
+    <customer_email>customer019@example.com</customer_email>
+    <customer_name>Sample Customer 019</customer_name>
+    <subject>Login blocked #019</subject>
+    <description>I cannot access my account after a password reset and 2FA login fails. Ticket sample number 019 includes enough detail for validation.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <status>new</status>
+    <tags>
+      <tag>login</tag>
+      <tag>password</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-020</customer_id>
+    <customer_email>customer020@example.com</customer_email>
+    <customer_name>Sample Customer 020</customer_name>
+    <subject>Checkout error #020</subject>
+    <description>The checkout page shows an error and the app is not working for our team. Ticket sample number 020 includes enough detail for validation.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>error</tag>
+      <tag>checkout</tag>
+    </tags>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-021</customer_id>
+    <customer_email>customer021@example.com</customer_email>
+    <customer_name>Sample Customer 021</customer_name>
+    <subject>Invoice question #021</subject>
+    <description>Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 021 includes enough detail for validation.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>billing</tag>
+      <tag>invoice</tag>
+    </tags>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-022</customer_id>
+    <customer_email>customer022@example.com</customer_email>
+    <customer_name>Sample Customer 022</customer_name>
+    <subject>Feature suggestion #022</subject>
+    <description>Suggestion to please add export filters as a nice to have improvement. Ticket sample number 022 includes enough detail for validation.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <status>new</status>
+    <tags>
+      <tag>feature</tag>
+      <tag>suggestion</tag>
+    </tags>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-023</customer_id>
+    <customer_email>customer023@example.com</customer_email>
+    <customer_name>Sample Customer 023</customer_name>
+    <subject>Report regression #023</subject>
+    <description>Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 023 includes enough detail for validation.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>bug</tag>
+      <tag>regression</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>tablet</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-024</customer_id>
+    <customer_email>customer024@example.com</customer_email>
+    <customer_name>Sample Customer 024</customer_name>
+    <subject>General question #024</subject>
+    <description>I have a general support question about how to configure my workspace. Ticket sample number 024 includes enough detail for validation.</description>
+    <category>other</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>general</tag>
+    </tags>
+    <metadata>
+      <source>phone</source>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-025</customer_id>
+    <customer_email>customer025@example.com</customer_email>
+    <customer_name>Sample Customer 025</customer_name>
+    <subject>Login blocked #025</subject>
+    <description>I cannot access my account after a password reset and 2FA login fails. Ticket sample number 025 includes enough detail for validation.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <status>new</status>
+    <tags>
+      <tag>login</tag>
+      <tag>password</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-026</customer_id>
+    <customer_email>customer026@example.com</customer_email>
+    <customer_name>Sample Customer 026</customer_name>
+    <subject>Checkout error #026</subject>
+    <description>The checkout page shows an error and the app is not working for our team. Ticket sample number 026 includes enough detail for validation.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>error</tag>
+      <tag>checkout</tag>
+    </tags>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-027</customer_id>
+    <customer_email>customer027@example.com</customer_email>
+    <customer_name>Sample Customer 027</customer_name>
+    <subject>Invoice question #027</subject>
+    <description>Please explain the duplicate invoice charge on my subscription renewal. Ticket sample number 027 includes enough detail for validation.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>billing</tag>
+      <tag>invoice</tag>
+    </tags>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-028</customer_id>
+    <customer_email>customer028@example.com</customer_email>
+    <customer_name>Sample Customer 028</customer_name>
+    <subject>Feature suggestion #028</subject>
+    <description>Suggestion to please add export filters as a nice to have improvement. Ticket sample number 028 includes enough detail for validation.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <status>new</status>
+    <assigned_to>support-agent-1</assigned_to>
+    <tags>
+      <tag>feature</tag>
+      <tag>suggestion</tag>
+    </tags>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-029</customer_id>
+    <customer_email>customer029@example.com</customer_email>
+    <customer_name>Sample Customer 029</customer_name>
+    <subject>Report regression #029</subject>
+    <description>Steps to reproduce show expected behavior differs from actual behavior after release. Ticket sample number 029 includes enough detail for validation.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <status>new</status>
+    <tags>
+      <tag>bug</tag>
+      <tag>regression</tag>
+    </tags>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>tablet</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>cust-030</customer_id>
+    <customer_email>customer030@example.com</customer_email>
+    <customer_name>Sample Customer 030</customer_name>
+    <subject>General question #030</subject>
+    <description>I have a general support question about how to configure my workspace. Ticket sample number 030 includes enough detail for validation.</description>
+    <category>other</category>
+    <priority>medium</priority>
+    <status>new</status>
+    <tags>
+      <tag>general</tag>
+    </tags>
+    <metadata>
+      <source>phone</source>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+</tickets>
