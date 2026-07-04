@@ -79,7 +79,12 @@ STAGE 2 — Planning (skip this stage entirely if
 context/bugs/${BUG_ID}/implementation-plan.md already exists; only run it if
 Stage 1's verdict was PASS or CONDITIONAL PASS): using the verified research,
 write context/bugs/${BUG_ID}/implementation-plan.md listing the exact files,
-before/after code, and test command needed to fix the bug.
+before/after code, and test command needed to fix the bug. If the bug case
+bundles multiple independent issues, give each its own scoped verification
+command (e.g. a specific test file/test id) instead of the full test suite,
+and reserve the full suite for one final check after all issues are fixed —
+otherwise Bug Fixer will see an unrelated, not-yet-fixed issue's test still
+failing after an earlier fix and stop prematurely.
 
 STAGE 3 — Fix: delegate to the bug-fixer subagent to apply
 context/bugs/${BUG_ID}/implementation-plan.md and produce

@@ -20,9 +20,9 @@ flowchart LR
   B --> D["Unit Test Generator"]
 ```
 
-**Status**: Tasks 1–4 (the four agents and two skills) are complete and ready to use.
-Task 5 (the seeded sample application with intentional bugs) has not been implemented yet
-— see [Next Step: Task 5](#next-step-task-5) below.
+**Status**: Tasks 1–5 are complete. The four agents and two skills are ready to use, and
+the sample application (Task 5, see [below](#sample-application-task-5)) is seeded with
+its intentional bugs and security issue, ready for `./run-pipeline.sh` to fix.
 
 ## Where each deliverable lives
 
@@ -85,6 +85,37 @@ resolved them as noted (rather than editing the original spec file):
    Resolved by using the required `.claude/skills/<slug>/SKILL.md` layout instead (see
    table above).
 
+## Sample application (Task 5)
+
+**Task Tracker API** — a small FastAPI service with an in-memory store, in
+`src/task_tracker_api/` (mirrors the layout and tooling of `../homework-1`: Python 3.14,
+`uv`, `mise`, `ruff`, `ty`), plus a `pytest` suite in `tests/`. See `HOWTORUN.md` for
+exact setup/run/test commands.
+
+It ships with three intentional, unrelated defects, bundled into a single bug case
+(`context/bugs/001-task-api-defects/bug-context.md`) so one pipeline run can fix all of
+them together:
+
+1. **Bug — stats divide-by-zero**: `GET /tasks/stats` crashes with a 500 when there are
+   no tasks yet (`src/task_tracker_api/store.py`, `stats()`).
+2. **Bug — wrong priority sort**: `GET /tasks?sort=priority` returns tasks in
+   alphabetical order (`high, low, medium`) instead of severity order
+   (`high, medium, low`) (`src/task_tracker_api/store.py`, `list_tasks()`).
+3. **Security issue — hardcoded secret + insecure comparison**: the admin bulk-delete
+   endpoint checks a hardcoded API key literal with plain `==` instead of loading it from
+   configuration and comparing it in constant time
+   (`src/task_tracker_api/main.py`, `ADMIN_API_KEY` / `delete_all_tasks`).
+
+Two tests in `tests/test_main.py` are pinned to fail against bugs 1 and 2 right now and
+pass once they're fixed; there is deliberately no test for the security issue, since a
+hardcoded/insecurely-compared key still authenticates correctly either way — it can only
+be found by a code review, which is exactly what `security-verifier` is for.
+
+All three were bundled into one bug case rather than three, because `security-verifier`
+is strictly read-only and only ever reviews the files `bug-fixer` actually changed — for
+the security issue to be "resolved after the pipeline," its fix has to be part of the
+same `implementation-plan.md`/`fix-summary.md` as the other two.
+
 ## Directory structure (current)
 
 ```
@@ -93,6 +124,15 @@ homework-4/
 ├── HOWTORUN.md
 ├── TASKS.md
 ├── run-pipeline.sh
+├── pyproject.toml, mise.toml, .python-version, .gitignore
+├── src/task_tracker_api/
+│   ├── __init__.py
+│   ├── main.py       # routes + seeded admin-key security issue
+│   ├── models.py     # Task, TaskCreate, Priority
+│   └── store.py      # in-memory store + seeded stats/sort bugs
+├── tests/
+│   ├── conftest.py
+│   └── test_main.py
 ├── .claude/
 │   ├── settings.json
 │   ├── agents/
@@ -105,15 +145,14 @@ homework-4/
 │       └── unit-tests-first/SKILL.md
 ├── context/
 │   ├── README.md          # explains the context/bugs/<bug-id>/ convention
-│   └── bugs/               # empty until Task 5 seeds a bug case
+│   └── bugs/001-task-api-defects/
+│       └── bug-context.md # the 3 seeded defects, reproduction steps, verification commands
 └── docs/screenshots/
 ```
 
-## Next step: Task 5
+## Next step: running the pipeline
 
-Task 5 (a small sample application with at least 2 intentional bugs and 1 intentional
-security issue, plus a seeded `context/bugs/<bug-id>/bug-context.md`) has not been
-implemented yet. Once it exists, `./run-pipeline.sh` can be run as-is against it — the
-four agents and both skills built here require no further changes to operate on it.
-
-See `HOWTORUN.md` for exact run instructions.
+Everything is in place. Run `./run-pipeline.sh 001-task-api-defects` (or just
+`./run-pipeline.sh`, since it's currently the only bug case) to exercise all four agents
+end-to-end against the seeded defects above. See `HOWTORUN.md` for exact instructions,
+including how to run and manually reproduce the app's bugs yourself first.

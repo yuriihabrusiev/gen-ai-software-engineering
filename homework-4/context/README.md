@@ -21,6 +21,7 @@ Only one bug case directory should exist under `context/bugs/` at a time when ru
 `./run-pipeline.sh` without an explicit bug id — the four agents look for a single
 subdirectory here and stop with an ambiguity error if there are zero or several.
 
-This directory is currently empty (no `.claude/agents` here — see the repo's `.claude/`
-folder). Task 5 will add the first real bug case, seeded with intentional bugs and a
-security issue in the sample app under `src/`.
+The first (and currently only) bug case is `context/bugs/001-task-api-defects/`, seeded
+by Task 5 with 2 intentional bugs and 1 intentional security issue in the sample app
+under `src/task_tracker_api/`. See its `bug-context.md` for details, and the root
+`README.md`/`HOWTORUN.md` for how to run the app and the pipeline against it.
