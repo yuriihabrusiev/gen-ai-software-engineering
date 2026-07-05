@@ -23,12 +23,16 @@ if [ ! -d tests ]; then
   exit 2
 fi
 
-if ! command -v pytest >/dev/null 2>&1; then
-  echo "Coverage gate: pytest not found on PATH. Install dependencies (pip install -r requirements.txt) before pushing." >&2
+if [ -x "$PROJECT_DIR/.venv/bin/pytest" ]; then
+  PYTEST="$PROJECT_DIR/.venv/bin/pytest"
+elif command -v pytest >/dev/null 2>&1; then
+  PYTEST="pytest"
+else
+  echo "Coverage gate: pytest not found (checked .venv/bin/pytest and PATH). Install dependencies (pip install -r requirements.txt) before pushing." >&2
   exit 2
 fi
 
-REPORT=$(pytest --cov=pipeline --cov=mcp --cov-report=term-missing -q 2>&1)
+REPORT=$("$PYTEST" --cov=pipeline --cov=mcp --cov-report=term-missing -q 2>&1)
 STATUS=$?
 
 if [ "$STATUS" -ne 0 ]; then
