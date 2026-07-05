@@ -52,8 +52,10 @@ def _read_json(path: Path) -> dict[str, Any] | None:
 
 def _public_data(record: dict[str, Any]) -> dict[str, Any]:
     """Strip PII fields from a terminal record's `data` payload before
-    returning it to an MCP client."""
-    data = dict(record.get("data", {}))
+    returning it to an MCP client. Defensive against a malformed result file
+    where `data` is present but not a dict (e.g. `null`)."""
+    raw = record.get("data")
+    data = dict(raw) if isinstance(raw, dict) else {}
     for field in _PII_FIELDS:
         data.pop(field, None)
     return data

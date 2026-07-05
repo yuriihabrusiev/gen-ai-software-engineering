@@ -8,7 +8,18 @@
 set -uo pipefail
 
 HOOK_INPUT="$(cat)"
-COMMAND="$(printf '%s' "$HOOK_INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)"
+if command -v jq >/dev/null 2>&1; then
+  COMMAND="$(printf '%s' "$HOOK_INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)"
+elif command -v python3 >/dev/null 2>&1; then
+  COMMAND="$(printf '%s' "$HOOK_INPUT" | python3 -c 'import json, sys
+try:
+    print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))
+except Exception:
+    print("")')"
+else
+  echo "Coverage gate: neither jq nor python3 found to parse the hook input — failing closed. Install jq or python3." >&2
+  exit 2
+fi
 
 if [[ ! "$COMMAND" =~ ^[[:space:]]*git[[:space:]]+push([[:space:]]|$) ]]; then
   exit 0

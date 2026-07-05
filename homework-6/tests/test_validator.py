@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from pipeline import validator
 from tests.conftest import make_envelope, make_transaction
 
@@ -157,3 +159,56 @@ def test_audit_log_and_result_never_contain_pii_in_the_log(shared_dir):
     # The results file is an internal record, not a log — it legitimately
     # retains the original fields.
     assert on_disk["data"]["source_account"] == "ACC-1001"
+
+
+def test_dry_run_reports_valid_and_invalid_counts(tmp_path, capsys):
+    """--dry-run must never write to shared/ — verified by not even setting
+    PIPELINE_SHARED_DIR (no shared_dir fixture) and confirming no shared/
+    directory appears as a side effect."""
+    records = [
+        make_transaction(transaction_id="TXN-OK"),
+        make_transaction(transaction_id="TXN-BADCUR", currency="ZZZ"),
+    ]
+    input_path = tmp_path / "fixture.json"
+    input_path.write_text(json.dumps(records), encoding="utf-8")
+
+    validator._dry_run(str(input_path))
+
+    out = capsys.readouterr().out
+    assert "Total: 2  Valid: 1  Invalid: 1" in out
+    assert "TXN-OK" in out
+    assert "TXN-BADCUR" in out
+    assert "CURRENCY_NOT_ISO4217" in out
+    assert not (tmp_path / "shared").exists()
+
+
+def test_dry_run_resolves_relative_path_against_repo_root(capsys):
+    """A bare filename (no directory component) resolves against
+    validator.REPO_ROOT, matching the real sample-transactions.json used by
+    `/validate-transactions` and `python pipeline/validator.py --dry-run`
+    with no argument."""
+    validator._dry_run("sample-transactions.json")
+
+    out = capsys.readouterr().out
+    assert "Total: 8" in out
+    assert "TXN006" in out
+    assert "CURRENCY_NOT_ISO4217" in out
+
+
+def test_main_requires_dry_run_flag(capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        validator.main([])
+
+    assert exc_info.value.code == 1
+    assert "Usage" in capsys.readouterr().err
+
+
+def test_main_dry_run_with_explicit_path(tmp_path, capsys):
+    records = [make_transaction(transaction_id="TXN-MAIN")]
+    input_path = tmp_path / "fixture.json"
+    input_path.write_text(json.dumps(records), encoding="utf-8")
+
+    validator.main(["--dry-run", str(input_path)])
+
+    out = capsys.readouterr().out
+    assert "Total: 1  Valid: 1  Invalid: 0" in out

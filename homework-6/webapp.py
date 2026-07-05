@@ -15,6 +15,7 @@ Two things a PaaS process needs that the local workflow doesn't:
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from contextlib import asynccontextmanager
@@ -22,6 +23,7 @@ from pathlib import Path
 
 import uvicorn
 from starlette.applications import Starlette
+from starlette.concurrency import run_in_threadpool
 from starlette.responses import JSONResponse, PlainTextResponse, RedirectResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
@@ -30,6 +32,12 @@ import orchestrator
 from pipeline.common import results_dir
 
 REPO_ROOT = Path(__file__).resolve().parent
+
+# Serializes pipeline runs: orchestrator.run_pipeline() moves per-transaction
+# files through shared/{input,processing,output,results}/ by a fixed
+# transaction_id-derived path, so two concurrent runs over the same
+# sample-transactions.json would race on those renames. One run at a time.
+_RUN_LOCK = asyncio.Lock()
 
 # Mirrors mcp/server.py's _PII_FIELDS — kept as a separate constant rather
 # than a shared import so this demo-only file has no dependency on the
@@ -44,7 +52,9 @@ def _read_json(path: Path):
         return json.load(handle)
 
 
-def _scrub(data: dict) -> dict:
+def _scrub(data: dict | None) -> dict:
+    if not isinstance(data, dict):
+        return {}
     return {key: value for key, value in data.items() if key not in _PII_FIELDS}
 
 
@@ -76,7 +86,10 @@ async def get_transaction(request):
 
 
 async def run_pipeline(request):
-    summary = orchestrator.run_pipeline()
+    if _RUN_LOCK.locked():
+        return JSONResponse({"error": "a pipeline run is already in progress"}, status_code=409)
+    async with _RUN_LOCK:
+        summary = await run_in_threadpool(orchestrator.run_pipeline)
     return JSONResponse(summary)
 
 
