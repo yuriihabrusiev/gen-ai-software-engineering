@@ -70,7 +70,10 @@ def process_transaction(record: dict[str, Any]) -> dict[str, Any]:
         "review_note": review_note,
     }
     envelope = common.make_envelope(
-        final_data, source_stage=STAGE_NAME, target_stage="results", message_type="transaction_result"
+        final_data,
+        source_stage=STAGE_NAME,
+        target_stage="results",
+        message_type="transaction_result",
     )
     common.write_result(transaction_id, envelope)
 

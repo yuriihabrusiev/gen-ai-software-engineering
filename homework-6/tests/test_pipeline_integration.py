@@ -109,10 +109,13 @@ def test_audit_log_has_one_entry_per_stage_per_surviving_record(shared_dir):
 
     # TXN008 survives all three stages -> one audit entry per stage.
     txn008_entries = [line for line in lines if line["transaction_id"] == "TXN008"]
-    assert [entry["stage"] for entry in txn008_entries] == ["validator", "fraud_detector", "compliance_checker"]
+    stages = [entry["stage"] for entry in txn008_entries]
+    assert stages == ["validator", "fraud_detector", "compliance_checker"]
 
 
-def test_small_fixture_every_record_produces_a_result_file_including_isolated_failure(shared_dir, tmp_path):
+def test_small_fixture_every_record_produces_a_result_file_including_isolated_failure(
+    shared_dir, tmp_path
+):
     """A small, hand-built fixture set covering CLEARED, HELD_FOR_REVIEW
     (watchlist), REJECTED (validation), and a downstream exception that must
     be isolated as REJECTED/INTERNAL_ERROR without halting the rest of the

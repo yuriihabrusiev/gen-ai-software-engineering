@@ -119,7 +119,9 @@ def process_transaction(record: dict[str, Any]) -> dict[str, Any]:
         "risk_level": risk_level,
         "fraud_status": fraud_status,
     }
-    envelope = common.make_envelope(enriched_data, source_stage=STAGE_NAME, target_stage="compliance_checker")
+    envelope = common.make_envelope(
+        enriched_data, source_stage=STAGE_NAME, target_stage="compliance_checker"
+    )
     common.write_to_output(envelope)
 
     outcome_prefix = "flagged" if fraud_status == "flagged" else "passed"

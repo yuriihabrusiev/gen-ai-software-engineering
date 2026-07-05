@@ -184,7 +184,9 @@ def test_shared_results_dir_resolves_against_pipeline_shared_dir_env(shared_dir,
     assert mcp_server_module._shared_results_dir() == shared_dir / "results"
 
 
-def test_shared_results_dir_resolves_relative_path_against_repo_root(monkeypatch, mcp_server_module):
+def test_shared_results_dir_resolves_relative_path_against_repo_root(
+    monkeypatch, mcp_server_module
+):
     """A relative PIPELINE_SHARED_DIR is resolved against the mcp package's
     own repo root, mirroring pipeline/common.py's default of a plain
     ./shared directory. This only inspects a computed Path — it performs no
@@ -193,10 +195,13 @@ def test_shared_results_dir_resolves_relative_path_against_repo_root(monkeypatch
 
     resolved = mcp_server_module._shared_results_dir()
 
-    assert resolved == mcp_server_module.REPO_ROOT / "some_relative_shared_dir_that_does_not_exist" / "results"
+    expected = mcp_server_module.REPO_ROOT / "some_relative_shared_dir_that_does_not_exist"
+    assert resolved == expected / "results"
 
 
-def test_list_pipeline_results_skips_unreadable_result_file(shared_dir, mcp_server_module, monkeypatch):
+def test_list_pipeline_results_skips_unreadable_result_file(
+    shared_dir, mcp_server_module, monkeypatch
+):
     """A result file that disappears/becomes unreadable between the glob()
     listing and the read (e.g. a race with another process) must be skipped
     rather than crashing the tool."""

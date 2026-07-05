@@ -56,7 +56,9 @@ def test_new_message_id_is_unique(shared_dir):
 
 
 def test_make_envelope_shape(shared_dir):
-    envelope = common.make_envelope({"transaction_id": "T1"}, source_stage="validator", target_stage="fraud_detector")
+    envelope = common.make_envelope(
+        {"transaction_id": "T1"}, source_stage="validator", target_stage="fraud_detector"
+    )
     assert set(envelope.keys()) == {
         "message_id",
         "timestamp",

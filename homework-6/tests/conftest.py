@@ -41,6 +41,7 @@ def mcp_server_module(shared_dir):
     module_name = "pipeline_mcp_server_under_test"
     path = REPO_ROOT / "mcp" / "server.py"
     spec = importlib.util.spec_from_file_location(module_name, path)
+    assert spec is not None and spec.loader is not None, f"could not load spec for {path}"
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     try:
@@ -68,7 +69,11 @@ def make_transaction(**overrides: Any) -> dict[str, Any]:
     return record
 
 
-def make_envelope(data: dict[str, Any], source_stage: str = "orchestrator", target_stage: str = "validator") -> dict[str, Any]:
+def make_envelope(
+    data: dict[str, Any],
+    source_stage: str = "orchestrator",
+    target_stage: str = "validator",
+) -> dict[str, Any]:
     """Build a standard message envelope wrapping `data`, matching the shape
     every pipeline stage's process_transaction(record) expects as input."""
     return {

@@ -15,12 +15,13 @@ writing code.
 
 | Layer | Assumption | Notes |
 |---|---|---|
-| Language / runtime | Python 3.12+ | Chosen for continuity with this course's stack and `decimal.Decimal` support. |
+| Language / runtime | Python 3.12+ (pinned to 3.14 in `mise.toml`/`.python-version`) | Chosen for continuity with this course's stack and `decimal.Decimal` support; pinned version matches this repo's other homeworks. |
 | Pipeline stages | Plain Python modules under `pipeline/` | No web framework required for the pipeline itself — stages are file-in/file-out. |
 | Front-end | Static HTML/CSS/JS dashboard under `frontend/` | Served by a minimal Python HTTP server; polls `shared/results/` for status. No build step. |
 | Custom MCP server | FastMCP (`mcp/server.py`) | Exposes `get_transaction_status`, `list_pipeline_results`, and the `pipeline://summary` resource. |
-| Test runner | pytest + pytest-cov | Coverage gate (see `.claude/settings.json`) blocks `git push` below 80%. |
-| Tooling | `pip` / `venv` | Keep dependencies in `requirements.txt`. |
+| Test runner | pytest + pytest-cov, run via `uv run pytest` | Coverage gate (see `.claude/settings.json`) blocks `git push` below 80%. |
+| Lint / types | `ruff` (`uv run ruff check .`) and `ty` (`uv run ty check`) | Both must be clean before pushing; see `mise run check`. |
+| Tooling | `mise` (env/tool-version manager) + `uv` (dependency/venv manager) | Dependencies live in `pyproject.toml` / `uv.lock` — no `pip`/`requirements.txt`. |
 
 ## Domain Rules (non-negotiable)
 

@@ -39,12 +39,14 @@ Still outstanding, and cannot be done by an agent — manual/student steps only:
 
 | Layer | Choice |
 |---|---|
-| Language / runtime | Python 3.12+ |
+| Language / runtime | Python 3.12+ (pinned to 3.14 in `mise.toml`/`.python-version`, matching this repo's other homeworks) |
+| Env / dependency manager | `mise` (tool versions) + `uv` (`pyproject.toml` + `uv.lock`) — no `pip`/`requirements.txt` |
 | Pipeline stages | Plain modules under `pipeline/`, file-in/file-out |
 | Front-end | Static HTML/CSS/JS dashboard under `frontend/`, no build step |
 | Custom MCP server | FastMCP, `mcp/server.py` |
 | Docs MCP | context7 (`.mcp.json`, to be added alongside the pipeline in step 2) |
-| Test runner | pytest + pytest-cov |
+| Lint / types | `ruff` + `ty`, run via `uv run` / `mise run lint` / `mise run typecheck` |
+| Test runner | pytest + pytest-cov, run via `uv run pytest` |
 
 ## Non-negotiable domain rules
 
@@ -78,6 +80,7 @@ homework-6/
 │   ├── fraud_detector.py
 │   └── <third_stage>.py
 ├── frontend/                       # Task 2 required front-end
+├── webapp.py                       # extra-mile: Render hosted-demo web wrapper
 ├── mcp/server.py                   # Task 4 custom FastMCP server
 ├── .mcp.json                       # context7 + pipeline-status (repo root, not .claude/)
 ├── research-notes.md               # Task 4: >= 2 context7 queries logged
@@ -85,7 +88,9 @@ homework-6/
 ├── tests/                          # Task 5 output (test-writer)
 ├── docs/{screenshots/,presentation.pdf}
 ├── README.md                       # Task 5 output (docs-writer) — must credit Yurii Habrusiev
-└── HOWTORUN.md
+├── HOWTORUN.md
+├── mise.toml, pyproject.toml, uv.lock, .python-version  # uv/mise env management
+└── .gitignore
 ```
 
 ## Claude Code harness already in place
@@ -97,8 +102,8 @@ homework-6/
   `/validate-transactions`.
 - **Coverage gate hook** (`.claude/settings.json` + `.claude/hooks/check-coverage.sh`):
   a `PreToolUse` hook on `Bash` matching `git push *` that runs
-  `pytest --cov=pipeline --cov=mcp` and blocks the push (exit 2) if total coverage
-  is below 80%, or if `tests/` doesn't exist yet at all.
+  `uv run pytest --cov=pipeline --cov=mcp` and blocks the push (exit 2) if total
+  coverage is below 80%, or if `tests/` doesn't exist yet at all.
 
 ## Working conventions
 

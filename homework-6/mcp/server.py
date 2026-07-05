@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from fastmcp import FastMCP
 
@@ -43,7 +43,7 @@ def _shared_results_dir() -> Path:
     return shared_dir / "results"
 
 
-def _read_json(path: Path) -> Optional[dict[str, Any]]:
+def _read_json(path: Path) -> dict[str, Any] | None:
     if not path.exists():
         return None
     with path.open("r", encoding="utf-8") as handle:

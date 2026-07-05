@@ -108,17 +108,24 @@ orchestrator.py -> shared/input/ -> Validation -> shared/output/->processing/
 
 ## Slide 8 — Demo Flow
 
-1. `pip install -r requirements.txt` inside a Python 3.12 venv.
-2. `python orchestrator.py` — process all 8 sample transactions; show the
-   printed summary (3 `CLEARED`, 4 `HELD_FOR_REVIEW`, 1 `REJECTED`).
-3. `python -m http.server 8000` from repo root, open
-   `http://localhost:8000/frontend/` — show the live dashboard reading
-   `shared/results/`.
-4. `python -m pytest --cov=pipeline --cov=mcp --cov-report=term-missing` —
-   show 69 passed, 99% coverage.
+0. Or skip setup entirely: open the **live hosted demo** at
+   https://transaction-pipeline-demo.onrender.com/frontend/ (Render free
+   tier — may take ~30-60s to wake up) and click "Run Pipeline".
+1. `mise install && mise run setup` (`uv sync` under the hood) — Python 3.14
+   via `mise`, dependencies via `uv`/`pyproject.toml`, no `pip`/`venv` step.
+2. `mise run pipeline` (`uv run python orchestrator.py`) — process all 8
+   sample transactions; show the printed summary (3 `CLEARED`, 4
+   `HELD_FOR_REVIEW`, 1 `REJECTED`).
+3. `mise run dashboard` (`uv run python -m http.server 8000`) from repo
+   root, open `http://localhost:8000/frontend/` — show the live dashboard
+   reading `shared/results/`.
+4. `mise run test` (`uv run pytest --cov=pipeline --cov=mcp
+   --cov-report=term-missing`) — show 69 passed, 99% coverage. `mise run
+   lint` / `mise run typecheck` (`ruff` / `ty`) both clean.
 5. Open this repo in an MCP-aware client (`.mcp.json` auto-starts
-   `context7` and `pipeline-status`) and call `get_transaction_status`,
-   `list_pipeline_results`, and read the `pipeline://summary` resource live.
+   `context7` and `pipeline-status` via `uv run`) and call
+   `get_transaction_status`, `list_pipeline_results`, and read the
+   `pipeline://summary` resource live.
 6. (Optional) Trigger the coverage-gate hook by attempting `git push` and
    showing it pass at 99% coverage.
 
@@ -158,6 +165,7 @@ orchestrator.py -> shared/input/ -> Validation -> shared/output/->processing/
 
 ## Slide 11 — Q&A / Links
 
+- **Live demo**: https://transaction-pipeline-demo.onrender.com/frontend/
 - `README.md` — architecture, stage responsibilities, tech stack.
 - `HOWTORUN.md` — exact commands for setup, pipeline run, dashboard, tests, MCP.
 - `specification.md` / `agents.md` — full technical spec and domain rules.

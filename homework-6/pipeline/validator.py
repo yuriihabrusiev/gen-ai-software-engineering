@@ -64,9 +64,17 @@ def _missing_required_fields(data: dict[str, Any]) -> list[str]:
 
 
 def _reject(data: dict[str, Any], transaction_id: str, reason_code: str) -> dict[str, Any]:
-    rejected_data = {**data, "status": "REJECTED", "outcome": "REJECTED", "reason_code": reason_code}
+    rejected_data = {
+        **data,
+        "status": "REJECTED",
+        "outcome": "REJECTED",
+        "reason_code": reason_code,
+    }
     envelope = common.make_envelope(
-        rejected_data, source_stage=STAGE_NAME, target_stage="results", message_type="transaction_result"
+        rejected_data,
+        source_stage=STAGE_NAME,
+        target_stage="results",
+        message_type="transaction_result",
     )
     common.write_result(transaction_id, envelope)
     common.append_audit_log(STAGE_NAME, transaction_id, f"REJECTED:{reason_code}")
@@ -106,8 +114,15 @@ def process_transaction(record: dict[str, Any]) -> dict[str, Any]:
     if currency not in ISO_4217_CURRENCIES:
         return _reject(data, transaction_id, "CURRENCY_NOT_ISO4217")
 
-    validated_data = {**data, "amount": str(amount), "currency": currency, "status": "VALIDATED"}
-    envelope = common.make_envelope(validated_data, source_stage=STAGE_NAME, target_stage="fraud_detector")
+    validated_data = {
+        **data,
+        "amount": str(amount),
+        "currency": currency,
+        "status": "VALIDATED",
+    }
+    envelope = common.make_envelope(
+        validated_data, source_stage=STAGE_NAME, target_stage="fraud_detector"
+    )
     common.write_to_output(envelope)
     common.append_audit_log(STAGE_NAME, transaction_id, "VALIDATED")
     return envelope

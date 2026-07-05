@@ -87,14 +87,18 @@ def test_non_positive_amount_rejected_for_transfer(shared_dir):
 
 
 def test_negative_amount_rejected_for_wire_transfer(shared_dir):
-    data = make_transaction(transaction_id="TXN-NEGWIRE", amount="-500.00", transaction_type="wire_transfer")
+    data = make_transaction(
+        transaction_id="TXN-NEGWIRE", amount="-500.00", transaction_type="wire_transfer"
+    )
     envelope = validator.process_transaction(make_envelope(data))
 
     assert envelope["data"]["reason_code"] == "NON_POSITIVE_AMOUNT"
 
 
 def test_positive_refund_amount_is_rejected(shared_dir):
-    data = make_transaction(transaction_id="TXN-POSREFUND", amount="100.00", transaction_type="refund")
+    data = make_transaction(
+        transaction_id="TXN-POSREFUND", amount="100.00", transaction_type="refund"
+    )
     envelope = validator.process_transaction(make_envelope(data))
 
     assert envelope["data"]["reason_code"] == "REFUND_MUST_BE_NEGATIVE"

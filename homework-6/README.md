@@ -1,5 +1,8 @@
 # Transaction Processing Pipeline
 
+> **Student Name**: Yurii Habrusiev
+> **AI Tools Used**: Claude Code (Sonnet 5 main session; subagents per `.claude/agents/`)
+
 Created by **Yurii Habrusiev**
 
 **Live demo:** https://transaction-pipeline-demo.onrender.com/frontend/ (free
@@ -129,14 +132,18 @@ consumers of `shared/results/`; neither one runs or mutates the pipeline.
 
 | Layer | Choice |
 |---|---|
-| Language / runtime | Python 3.12 (pinned in `mise.toml`; developed inside a `.venv`) |
+| Language / runtime | Python 3.14 (pinned in `mise.toml` / `.python-version`; `requires-python >= 3.12` in `pyproject.toml`) |
+| Env / dependency manager | [`mise`](https://mise.jdx.dev/) manages the Python and `uv` tool versions; `uv` (via `pyproject.toml` + `uv.lock`) manages the virtualenv and dependencies — no `pip`/`requirements.txt` |
+| Lint / format | [`ruff`](https://docs.astral.sh/ruff/) (`uv run ruff check .`) |
+| Type checker | [`ty`](https://github.com/astral-sh/ty) (`uv run ty check`) |
 | Pipeline stages | Plain modules under `pipeline/` (`validator.py`, `fraud_detector.py`, `compliance_checker.py`, `common.py`), file-in/file-out only |
 | Orchestration | `orchestrator.py` — drives the file-based protocol, isolates per-record failures, writes `shared/results/summary.json` |
 | Front-end | Static HTML/CSS/JS dashboard under `frontend/` (`index.html`, `app.js`, `styles.css`), no build step, served with any static file server |
+| Hosted demo | `webapp.py` (Starlette/uvicorn), deployed on Render — see the live demo link above |
 | Custom MCP server | FastMCP, `mcp/server.py` (server name `pipeline-status`) |
 | Docs MCP | `context7` (`.mcp.json`, queried for `decimal`/FastMCP patterns — see `research-notes.md`) |
-| Test runner | pytest + pytest-cov (`tests/`, 69 tests, 99% coverage on `pipeline/` + `mcp/`) |
+| Test runner | pytest + pytest-cov via `uv run pytest` (`tests/`, 69 tests, 99% coverage on `pipeline/` + `mcp/`) |
 | Coverage gate | `.claude/hooks/check-coverage.sh`, a `PreToolUse` hook on `git push` that blocks below 80% total coverage |
 
 See `HOWTORUN.md` for exact commands to run the pipeline, the dashboard, the
-tests, and the MCP servers.
+tests, lint/type checks, and the MCP servers.

@@ -44,7 +44,10 @@ def _write_internal_error(transaction_id: str, exc: Exception, stage: str) -> di
         "reason_code": "INTERNAL_ERROR",
     }
     envelope = common.make_envelope(
-        result_data, source_stage="orchestrator", target_stage="results", message_type="transaction_result"
+        result_data,
+        source_stage="orchestrator",
+        target_stage="results",
+        message_type="transaction_result",
     )
     common.write_result(transaction_id, envelope)
     common.append_audit_log("orchestrator", transaction_id, "REJECTED:INTERNAL_ERROR")
@@ -57,7 +60,9 @@ def _write_internal_error(transaction_id: str, exc: Exception, stage: str) -> di
 
 
 def _move_input_to_processing(transaction_id: str, raw_record: dict[str, Any]) -> Path:
-    envelope = common.make_envelope(raw_record, source_stage="orchestrator", target_stage="validator")
+    envelope = common.make_envelope(
+        raw_record, source_stage="orchestrator", target_stage="validator"
+    )
     input_path = common.input_dir() / f"{transaction_id}.json"
     common.write_json_atomic(input_path, envelope)
     processing_path = common.processing_dir() / f"{transaction_id}.json"
@@ -113,7 +118,9 @@ def _process_one(raw_record: dict[str, Any]) -> dict[str, Any]:
     processing_path = _move_output_to_processing(transaction_id)
     if processing_path is None:
         return _write_internal_error(
-            transaction_id, FileNotFoundError("expected shared/output/ file from validator"), "validator_handoff"
+            transaction_id,
+            FileNotFoundError("expected shared/output/ file from validator"),
+            "validator_handoff",
         )
     try:
         envelope = _read_envelope(processing_path)
@@ -162,7 +169,8 @@ def run_pipeline(input_path: str = "sample-transactions.json") -> dict[str, Any]
         transaction_id = raw_record.get("transaction_id") or "UNKNOWN"
         try:
             result = _process_one(raw_record)
-        except Exception as exc:  # last-resort safety net; _process_one already isolates stage errors
+        except Exception as exc:
+            # last-resort safety net; _process_one already isolates stage errors
             result = _write_internal_error(transaction_id, exc, "orchestrator")
 
         data = result.get("data", {})

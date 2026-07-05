@@ -1,32 +1,38 @@
 # How to Run — Transaction Processing Pipeline
 
 All commands below assume your shell's working directory is the repo root:
-`homework-6/`. They were verified against the actual repo state (Python 3.12.12
-in the project's `.venv`, pytest 9.1.1, 69 tests, 99% coverage) as of this
-writing.
+`homework-6/`. They were verified against the actual repo state (Python 3.14.3
+via `uv`, pytest 9.1.1, 69 tests, 99% coverage) as of this writing.
 
 ## 1. Environment setup
 
-1. Confirm Python 3.12+ is available (the project pins `python = "3.12"` in
-   `mise.toml`; if you use `mise`, run `mise install` first).
-2. Create and activate a virtual environment:
+`mise` is the main environment manager for this project — it pins the Python
+version and the `uv` version in `mise.toml`; `uv` (via `pyproject.toml` +
+`uv.lock`) manages the virtualenv and dependencies. There is no `pip` /
+`requirements.txt` / manual `venv` step.
+
+1. Install [`mise`](https://mise.jdx.dev/getting-started.html) if you don't
+   already have it, then install this project's pinned tools (Python 3.14,
+   latest `uv`):
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+   mise install
    ```
-3. Install dependencies:
+2. Install project dependencies:
    ```bash
-   pip install -r requirements.txt
+   mise run setup
    ```
-   This installs `fastmcp`, `pytest`, and `pytest-cov`.
+   Equivalent direct `uv` command: `uv sync`. This creates `.venv/` and
+   installs runtime deps (`fastmcp`, `starlette`, `uvicorn`) plus the dev
+   group (`pytest`, `pytest-cov`, `ruff`, `ty`) from `uv.lock`.
 
 ## 2. Run the pipeline
 
 1. From the repo root, run:
    ```bash
-   python orchestrator.py
+   mise run pipeline
    ```
-   (Optionally pass a different input file: `python orchestrator.py path/to/other.json` —
+   Equivalent direct command: `uv run python orchestrator.py`. (Optionally
+   pass a different input file: `uv run python orchestrator.py path/to/other.json` —
    it defaults to `sample-transactions.json`.)
 2. This creates `shared/{input,processing,output,results}/` if they don't exist,
    drives all 8 records in `sample-transactions.json` through Validation ->
@@ -62,8 +68,9 @@ resolve.
    `shared/results/` has data to show.
 2. From the repo root, start a static file server:
    ```bash
-   python -m http.server 8000
+   mise run dashboard
    ```
+   Equivalent direct command: `uv run python -m http.server 8000`.
 3. Open **http://localhost:8000/frontend/** in a browser.
 4. The page shows total transaction count, per-outcome counts, a reason-code
    breakdown, and a per-transaction table (ID, outcome, reason code, risk
@@ -73,12 +80,16 @@ resolve.
 
 ## 4. Run the test suite and coverage report
 
-1. With the virtual environment active, run:
+1. Run:
    ```bash
-   python -m pytest --cov=pipeline --cov=mcp --cov-report=term-missing
+   mise run test
    ```
-   (Plain `pytest` also works — `pytest.ini` sets `pythonpath = .` and
-   `testpaths = tests`.)
+   Equivalent direct command:
+   ```bash
+   uv run pytest --cov=pipeline --cov=mcp --cov-report=term-missing
+   ```
+   (`pyproject.toml`'s `[tool.pytest.ini_options]` sets `pythonpath = ["."]`
+   and `testpaths = ["tests"]`, so this works regardless of caller cwd.)
 2. Expected result: 69 tests passed, 99% total coverage across
    `pipeline/common.py`, `pipeline/validator.py`, `pipeline/fraud_detector.py`,
    `pipeline/compliance_checker.py` (each at 100%), and `mcp/server.py` (98%,
@@ -86,9 +97,21 @@ resolve.
    `if __name__ == "__main__":`, which isn't exercised by tests by design).
 3. A `PreToolUse` git hook (`.claude/hooks/check-coverage.sh`, wired in
    `.claude/settings.json`) automatically re-runs this same coverage command
-   before any `git push` and blocks the push (exit code 2) if total coverage
-   falls below 80%, or if `tests/` doesn't exist at all. No manual action is
-   needed to trigger it — it fires on the `Bash(git push *)` pattern.
+   (via `uv run pytest`) before any `git push` and blocks the push (exit code
+   2) if total coverage falls below 80%, or if `tests/` doesn't exist at all.
+   No manual action is needed to trigger it.
+
+## 4b. Lint and type checks
+
+```bash
+mise run lint        # uv run ruff check .
+mise run lint:fix     # uv run ruff check --fix .
+mise run typecheck    # uv run ty check
+mise run check        # lint + typecheck + test
+```
+
+Expected result: `ruff check .` and `ty check` are both clean (`All checks
+passed!`).
 
 ## 5. Start the MCP servers for a manual demo
 
@@ -98,10 +121,14 @@ Both servers are declared in `.mcp.json` at the repo root:
 {
   "mcpServers": {
     "context7": { "command": "npx", "args": ["-y", "@upstash/context7-mcp@latest"] },
-    "pipeline-status": { "command": "python", "args": ["mcp/server.py"] }
+    "pipeline-status": { "command": "uv", "args": ["run", "python", "mcp/server.py"] }
   }
 }
 ```
+
+`pipeline-status` is invoked via `uv run` (not a bare `python`) so it always
+resolves the project's `uv`-managed environment regardless of the calling
+process's shell state.
 
 1. **Automatic (recommended for a Claude Code demo):** open this repo in
    Claude Code (or any MCP-aware client that reads `.mcp.json`); it will start
@@ -110,7 +137,7 @@ Both servers are declared in `.mcp.json` at the repo root:
 2. **Manual/standalone run of the custom server** (for testing outside an MCP
    client, e.g. with the `fastmcp` CLI or a manual STDIO client):
    ```bash
-   python mcp/server.py
+   uv run python mcp/server.py
    ```
    This starts the `pipeline-status` FastMCP server over STDIO. It only reads
    `shared/results/` — it never writes to or mutates pipeline state.
@@ -139,8 +166,10 @@ docstring) as a Render free-tier web service.
 - Repo: `https://github.com/yuriihabrusiev/gen-ai-software-engineering`,
   branch `homework-6-submission`, root directory `homework-6` (this is a
   monorepo — Render builds only the `homework-6/` subtree).
-- Build command: `pip install -r requirements.txt`. Start command:
-  `python webapp.py`. Health check path: `/healthz`.
+- Build command: `pip install uv && uv sync --frozen` (Render's Python
+  runtime ships `pip` but not `uv`, so the build bootstraps `uv` via `pip`
+  first, then uses it exclusively). Start command: `uv run python webapp.py`.
+  Health check path: `/healthz`.
 - Auto-deploy is on: every push to `homework-6-submission` triggers a new
   Render deploy automatically.
 

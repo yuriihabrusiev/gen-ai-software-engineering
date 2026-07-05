@@ -14,7 +14,8 @@ from tests.conftest import make_envelope, make_transaction
 
 
 def _run(data):
-    return fraud_detector.process_transaction(make_envelope(data, source_stage="validator", target_stage="fraud_detector"))
+    envelope = make_envelope(data, source_stage="validator", target_stage="fraud_detector")
+    return fraud_detector.process_transaction(envelope)
 
 
 def _audit_lines(shared_dir):
@@ -43,7 +44,8 @@ def test_low_risk_domestic_transfer_scores_zero(shared_dir):
 
 
 def test_high_value_wire_transfer_scores_50_medium(shared_dir):
-    """TXN002-equivalent: $25,000 USD wire transfer, business hours, domestic -> 40 (tier) + 10 (wire) = 50."""
+    """TXN002-equivalent: $25,000 USD wire transfer, business hours, domestic
+    -> 40 (tier) + 10 (wire) = 50."""
     data = make_transaction(
         transaction_id="TXN002",
         amount="25000.00",
@@ -108,7 +110,8 @@ def test_high_value_off_hours_wire_scores_70_high(shared_dir):
 
 
 def test_refund_amount_is_risk_scored_on_absolute_value(shared_dir):
-    """TXN007-equivalent: -100.00 GBP refund, off-hours=False, cross-border (GB) -> tier 0 + 15 = 15, LOW."""
+    """TXN007-equivalent: -100.00 GBP refund, off-hours=False, cross-border
+    (GB) -> tier 0 + 15 = 15, LOW."""
     data = make_transaction(
         transaction_id="TXN007",
         amount="-100.00",
@@ -141,23 +144,33 @@ def test_amount_tier_boundaries_are_strictly_greater_than(shared_dir):
 
 
 def test_off_hours_boundary_hours(shared_dir):
-    before_6am = _run(make_transaction(transaction_id="T-0559", amount="100.00", timestamp="2026-03-16T05:59:00Z"))
+    before_6am = _run(
+        make_transaction(transaction_id="T-0559", amount="100.00", timestamp="2026-03-16T05:59:00Z")
+    )
     assert before_6am["data"]["risk_score"] == 20  # off-hours only
 
-    at_6am = _run(make_transaction(transaction_id="T-0600", amount="100.00", timestamp="2026-03-16T06:00:00Z"))
+    at_6am = _run(
+        make_transaction(transaction_id="T-0600", amount="100.00", timestamp="2026-03-16T06:00:00Z")
+    )
     assert at_6am["data"]["risk_score"] == 0  # not off-hours
 
-    at_2159 = _run(make_transaction(transaction_id="T-2159", amount="100.00", timestamp="2026-03-16T21:59:00Z"))
+    at_2159 = _run(
+        make_transaction(transaction_id="T-2159", amount="100.00", timestamp="2026-03-16T21:59:00Z")
+    )
     assert at_2159["data"]["risk_score"] == 0
 
-    at_2200 = _run(make_transaction(transaction_id="T-2200", amount="100.00", timestamp="2026-03-16T22:00:00Z"))
+    at_2200 = _run(
+        make_transaction(transaction_id="T-2200", amount="100.00", timestamp="2026-03-16T22:00:00Z")
+    )
     assert at_2200["data"]["risk_score"] == 20
 
 
 def test_missing_country_defaults_to_cross_border(shared_dir):
     """Fail-safe: an unknown/missing metadata.country is treated as
     cross-border rather than silently passing."""
-    data = make_transaction(transaction_id="T-NOCOUNTRY", amount="100.00", metadata={"channel": "online"})
+    data = make_transaction(
+        transaction_id="T-NOCOUNTRY", amount="100.00", metadata={"channel": "online"}
+    )
     envelope = _run(data)
 
     assert envelope["data"]["risk_score"] == 15
@@ -179,7 +192,8 @@ def test_risk_score_is_capped_at_100(shared_dir):
 
 
 def test_risk_level_boundary_at_30_is_medium(shared_dir):
-    """wire_transfer (+10) + off-hours (+20) + tier 0 = exactly 30 -> MEDIUM (inclusive lower bound)."""
+    """wire_transfer (+10) + off-hours (+20) + tier 0 = exactly 30 -> MEDIUM
+    (inclusive lower bound)."""
     data = make_transaction(
         transaction_id="T-30",
         amount="100.00",
@@ -195,7 +209,8 @@ def test_risk_level_boundary_at_30_is_medium(shared_dir):
 
 
 def test_risk_level_boundary_at_60_is_high(shared_dir):
-    """tier 15 (>5000) + off-hours (+20) + cross-border (+15) + wire (+10) = exactly 60 -> HIGH (inclusive lower bound)."""
+    """tier 15 (>5000) + off-hours (+20) + cross-border (+15) + wire (+10) =
+    exactly 60 -> HIGH (inclusive lower bound)."""
     data = make_transaction(
         transaction_id="T-60",
         amount="6000.00",

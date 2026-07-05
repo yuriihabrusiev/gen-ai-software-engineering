@@ -32,9 +32,10 @@ Must include:
 
 ## HOWTORUN.md
 
-Numbered, copy-pasteable steps covering, in order: environment setup (Python
-version, `pip install -r requirements.txt`), running the pipeline
-(`python orchestrator.py`), running the front-end dashboard (exact command and
+Numbered, copy-pasteable steps covering, in order: environment setup (`mise
+install` + `mise run setup` / `uv sync` — this project uses `mise` + `uv`,
+not `pip`/`requirements.txt`), running the pipeline (`uv run python
+orchestrator.py`), running the front-end dashboard (exact command and
 URL/port — confirm this against what `pipeline-builder` actually built, do not
 guess), running the test suite and coverage report, and starting the MCP servers
 (context7 + the custom `pipeline-status` server) for a manual demo.

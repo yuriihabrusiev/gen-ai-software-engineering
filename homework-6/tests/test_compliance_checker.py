@@ -14,7 +14,12 @@ from tests.conftest import make_envelope, make_transaction
 
 
 def _scored(data, risk_score=0, risk_level="LOW", fraud_status="passed"):
-    data = {**data, "risk_score": risk_score, "risk_level": risk_level, "fraud_status": fraud_status}
+    data = {
+        **data,
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "fraud_status": fraud_status,
+    }
     return data
 
 
@@ -31,7 +36,12 @@ def _audit_lines(shared_dir):
 
 def test_clean_transaction_is_cleared(shared_dir):
     """TXN008-equivalent: not watchlisted, fraud_status passed -> CLEARED."""
-    data = _scored(make_transaction(transaction_id="TXN008"), risk_score=0, risk_level="LOW", fraud_status="passed")
+    data = _scored(
+        make_transaction(transaction_id="TXN008"),
+        risk_score=0,
+        risk_level="LOW",
+        fraud_status="passed",
+    )
     envelope = _run(data)
 
     assert envelope["data"]["outcome"] == "CLEARED"
@@ -81,9 +91,13 @@ def test_watchlisted_source_account_is_held(shared_dir):
 
 
 def test_fraud_flagged_transaction_is_held(shared_dir):
-    """TXN002-equivalent: fraud_status flagged, no watchlist match -> HELD_FOR_REVIEW/FRAUD_RISK_FLAGGED."""
+    """TXN002-equivalent: fraud_status flagged, no watchlist match ->
+    HELD_FOR_REVIEW/FRAUD_RISK_FLAGGED."""
     data = _scored(
-        make_transaction(transaction_id="TXN002"), risk_score=50, risk_level="MEDIUM", fraud_status="flagged"
+        make_transaction(transaction_id="TXN002"),
+        risk_score=50,
+        risk_level="MEDIUM",
+        fraud_status="flagged",
     )
     envelope = _run(data)
 
