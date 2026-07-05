@@ -3,12 +3,13 @@
 ## Purpose
 
 This file guides an AI coding agent implementing the pipeline described in
-`specification.md`. It is a **starter** — no pipeline code exists yet, and
-`specification.md` itself has not been written. The `spec-writer` subagent
-(via the `/write-spec` skill) must extend this file with project-specific rules
-once the spec exists. Where this file and `specification.md` disagree,
-`specification.md` is authoritative — this file restates the parts an agent must
-never violate while writing code.
+`specification.md`. `specification.md` now exists (produced by the
+`spec-writer` subagent via the `/write-spec` skill) and this file has been
+extended to match its concrete decisions (stage choice, fraud-scoring formula,
+refund sign convention, currency rejection code). No pipeline code exists yet.
+Where this file and `specification.md` disagree, `specification.md` is
+authoritative — this file restates the parts an agent must never violate while
+writing code.
 
 ## Assumed Tech Stack
 
@@ -25,17 +26,42 @@ never violate while writing code.
 
 - Money is always parsed and compared as `decimal.Decimal`, never `float`. Amounts
   arrive as strings in `sample-transactions.json` and in every inter-stage message.
-- Currency codes are validated against ISO 4217. An unknown code is a validation
-  rejection, not a crash.
+- Currency codes are validated against a fixed, offline ISO 4217 allow-list
+  constant in `pipeline/validator.py`. An unknown code (e.g. `TXN006`'s `XYZ`) is a
+  validation rejection with reason code `CURRENCY_NOT_ISO4217`, not a crash.
 - Stages communicate only through the file-based protocol in `shared/{input,
   processing,output,results}/`, using the standard message envelope (`message_id`,
   `timestamp`, `source_stage`, `target_stage`, `message_type`, `data`). No stage
   calls another stage's code directly.
 - Every stage writes a structured audit-trail log entry (ISO 8601 UTC timestamp,
   stage name, `transaction_id`, outcome) for every record it processes, pass or
-  reject.
+  reject, appended to `shared/results/audit_log.jsonl` (JSON Lines, one entry per
+  stage per record).
 - `source_account`, `destination_account`, and any free-text `description` field are
-  sensitive. Never write them to logs in plaintext.
+  sensitive. Never write them to logs in plaintext. When an account must appear in
+  a human-facing message, mask it as `ACC-***<last 2 digits>`.
+- The three pipeline stages are, in order: **Validation** (`pipeline/validator.py`)
+  -> **Fraud Detection** (`pipeline/fraud_detector.py`) -> **Compliance Check**
+  (`pipeline/compliance_checker.py`). Compliance Check was chosen as the third
+  stage because it is the natural terminal decision point for a risk-scored
+  transaction (watchlist screening + hold/clear), not because it was the only
+  option available — see `specification.md` section 1/5 for the rationale.
+- **Fraud risk scoring formula** (`pipeline/fraud_detector.py`, additive, capped at
+  100, computed on `abs(amount)`): amount `> 50,000` -> +60; else `> 10,000` ->
+  +40; else `> 5,000` -> +15; else +0. Off-hours (`timestamp` UTC hour `< 6` or
+  `>= 22`) -> +20. Cross-border (`metadata.country` not in the home-country set
+  `{"US"}`) -> +15. `transaction_type == "wire_transfer"` -> +10. Risk level:
+  `< 30` = `LOW` (`fraud_status="passed"`), `30-59` = `MEDIUM`, `>= 60` = `HIGH`
+  (both `MEDIUM`/`HIGH` set `fraud_status="flagged"`). Fraud Detection never
+  rejects a record itself — it always forwards to Compliance Check, which makes
+  the final hold/clear call.
+- **Compliance Check decision rule** (`pipeline/compliance_checker.py`): a static
+  `WATCHLIST_ACCOUNTS = {"ACC-9999"}` constant is checked against both
+  `source_account` and `destination_account` first (match -> `HELD_FOR_REVIEW` /
+  `WATCHLIST_MATCH`, overriding fraud score); then any `fraud_status == "flagged"`
+  record not already held -> `HELD_FOR_REVIEW` / `FRAUD_RISK_FLAGGED`; everything
+  else -> `CLEARED`. This is the only stage that writes a terminal record to
+  `shared/results/`.
 
 ## Code Style
 
@@ -50,10 +76,24 @@ never violate while writing code.
 ## Testing & Verification Expectations
 
 - Every pipeline stage gets unit tests covering: the happy path, at least one
-  rejection path, and any boundary the stage introduces (e.g. the $10,000 fraud
-  threshold, an unknown currency code).
+  rejection path, and any boundary the stage introduces (e.g. the $10,000/$50,000
+  fraud-scoring amount tiers, the 30/60 risk-score flag/HIGH boundaries, an unknown
+  currency code, the refund sign-convention carve-out).
+- Validator tests must cover all five reason codes: `MISSING_REQUIRED_FIELD`,
+  `INVALID_AMOUNT_FORMAT`, `NON_POSITIVE_AMOUNT`, `REFUND_MUST_BE_NEGATIVE`,
+  `CURRENCY_NOT_ISO4217`.
+- Fraud detector tests must assert the exact scores from `sample-transactions.json`
+  (e.g. `TXN002`=50/MEDIUM, `TXN003`=15/LOW despite being $0.01 under the $10,000
+  tier, `TXN004`=35/MEDIUM, `TXN005`=70/HIGH) — treat these as regression fixtures,
+  not just "flag vs. not flagged" assertions.
+- Compliance checker tests must cover both hold reasons independently: a
+  watchlist match (`WATCHLIST_MATCH`, e.g. `TXN003`'s destination `ACC-9999`)
+  overriding a low fraud score, and a fraud-flagged record with no watchlist hit
+  (`FRAUD_RISK_FLAGGED`).
 - One integration test runs the full orchestrator over a small fixture set and
-  asserts every input record has a corresponding file in `shared/results/`.
+  asserts every input record has a corresponding file in `shared/results/`, and
+  that `shared/results/summary.json` counts match the expected outcome
+  distribution.
 - Tests must not touch the real `shared/` directories — use a temp directory
   (`tmp_path` fixture or equivalent) so test runs never pollute or depend on a real
   pipeline run.
@@ -74,11 +114,24 @@ never violate while writing code.
   plausible amount), **prefer the fail-safe direction**: reject/flag rather than
   silently pass. A false-positive rejection is recoverable by review; a
   false-negative fraud pass may not be.
-- A negative amount (see `TXN007`, a refund) is not automatically invalid — confirm
-  in `specification.md` whether refunds are a distinct `transaction_type` with its
-  own sign convention before rejecting on sign alone.
+- **Refund sign convention (resolved, see `specification.md` section 3)**: a
+  negative amount is not automatically invalid. `transaction_type` determines the
+  required sign: `transfer`/`wire_transfer` require `amount > 0`
+  (`NON_POSITIVE_AMOUNT` if violated); `refund` requires `amount < 0`
+  (`REFUND_MUST_BE_NEGATIVE` if violated). `TXN007` (`-100.00 GBP`, `refund`) is
+  valid and must pass Validation. Fraud scoring always uses `abs(amount)`, so a
+  refund's magnitude is still risk-scored like any other transaction.
+- **Invalid currency (resolved)**: an unrecognized ISO 4217 code is rejected at
+  Validation with reason code `CURRENCY_NOT_ISO4217` (see `TXN006`, currency
+  `XYZ`) and never reaches Fraud Detection or Compliance Check.
+- **Watchlist overrides fraud score**: a `WATCHLIST_MATCH` hold at Compliance
+  Check takes priority over — and is reported independently of — the fraud
+  detector's `risk_level`. A transaction can be `LOW` risk and still end up
+  `HELD_FOR_REVIEW` (e.g. `TXN003`).
 - Never let one malformed record crash the orchestrator run for the rest of the
-  batch — isolate per-record failures and record them as a rejection outcome.
+  batch — isolate per-record failures and record them as a `REJECTED` outcome
+  (reason code `INTERNAL_ERROR` for unexpected exceptions, distinct from the
+  five validation reason codes).
 
 ## Adding New Features
 

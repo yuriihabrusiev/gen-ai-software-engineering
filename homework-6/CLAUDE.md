@@ -7,23 +7,24 @@ must not be violated regardless of which agent/skill is active.
 
 ## Session status (update as work progresses)
 
-As of this writing, **only scaffolding exists**: `TASKS.md`, `sample-transactions.json`,
-`specification-TEMPLATE-hint.md`, the starter `agents.md`, and the four subagents /
-three skills / coverage-gate hook under `.claude/`. Nothing below has been built yet:
-`specification.md`, `orchestrator.py`, `pipeline/`, `frontend/`, `mcp/server.py`,
-`.mcp.json`, `tests/`, `research-notes.md`, `README.md`, `HOWTORUN.md`,
-`docs/presentation.pdf`, `docs/screenshots/`.
+Tasks 1-5's automatable parts are all done: `specification.md` / extended
+`agents.md` (Task 1); `orchestrator.py`, `pipeline/{common,validator,
+fraud_detector,compliance_checker}.py`, `frontend/`, `mcp/server.py`,
+`.mcp.json`, `research-notes.md` (Task 2/4); `tests/` — 69 tests, 99% coverage
+on `pipeline/`+`mcp/`, coverage-gate hook verified passing (Task 3); `README.md`
+(credits Yurii Habrusiev), `HOWTORUN.md`, `docs/presentation-outline.md` (Task
+5 docs). All verified independently against real command output, not just
+agent self-reports.
 
-Build order for the next session:
-1. `/write-spec` -> `specification.md` + extended `agents.md` (Task 1).
-2. `pipeline-builder` subagent -> `orchestrator.py`, `pipeline/*.py`, `frontend/`,
-   `.mcp.json` + `mcp/server.py`, `research-notes.md` with >= 2 context7 queries
-   (Task 2 & 4).
-3. `test-writer` subagent -> `tests/` at >= 90% coverage (Task 3 & 5).
-4. `docs-writer` subagent -> `README.md`, `HOWTORUN.md`, presentation outline
-   (Task 5).
-5. Screenshots + `docs/presentation.pdf` export + PR description (manual, by the
-   student).
+Still outstanding, and cannot be done by an agent — manual/student steps only:
+1. Capture the 6 required screenshots into `docs/screenshots/` (directory
+   doesn't exist yet): `pipeline-run.png`, `frontend.png`, `test-coverage.png`,
+   `skill-run-pipeline.png`, `hook-trigger.png`, `mcp-interaction.png`.
+2. Export `docs/presentation-outline.md` to an actual `docs/presentation.pdf`
+   (e.g. paste into Slides/Keynote/a Markdown-to-PDF tool).
+3. Write the PR description embedding/linking the screenshots and the
+   presentation PDF (see `TASKS.md`'s Submission section for the required
+   content list).
 
 ## Tech stack (decided)
 

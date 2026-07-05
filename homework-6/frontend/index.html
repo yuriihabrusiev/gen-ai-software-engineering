@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transaction Pipeline Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>Transaction Processing Pipeline</h1>
+      <p class="subtitle">Read-only viewer of <code>shared/results/</code> — never triggers a pipeline run.</p>
+    </div>
+    <button id="refresh-button" type="button">Refresh</button>
+  </header>
+
+  <p id="status-message" class="status-message">Loading...</p>
+
+  <section class="summary-section">
+    <div class="total-card">
+      <div class="total-value" id="total-count">0</div>
+      <div class="total-label">Total Transactions</div>
+    </div>
+    <div id="outcome-counts" class="counts-row"></div>
+  </section>
+
+  <section class="reasons-section">
+    <h2>Reason Codes</h2>
+    <ul id="reason-codes" class="reason-list"></ul>
+  </section>
+
+  <section class="results-section">
+    <h2>Transactions</h2>
+    <div class="table-wrap">
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Outcome</th>
+            <th>Reason Code</th>
+            <th>Risk Level</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>
+      This dashboard never renders <code>source_account</code>,
+      <code>destination_account</code>, or <code>description</code>.
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

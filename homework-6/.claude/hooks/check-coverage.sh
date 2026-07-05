@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 # PreToolUse hook: blocks `git push` if unit test coverage is below the required
-# threshold. Wired up in .claude/settings.json under PreToolUse -> matcher "Bash"
-# with if "Bash(git push *)". Exit 2 blocks the tool call (stderr is shown to
-# Claude); exit 0 allows it.
+# threshold. Wired up in .claude/settings.json under PreToolUse -> matcher "Bash".
+# Reads the triggering command from stdin itself (rather than relying solely on
+# the settings.json "if" filter) and no-ops on anything that isn't `git push`,
+# since that filter is not reliably honored by every Claude Code build. Exit 2
+# blocks the tool call (stderr is shown to Claude); exit 0 allows it.
 set -uo pipefail
+
+HOOK_INPUT="$(cat)"
+COMMAND="$(printf '%s' "$HOOK_INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)"
+
+if [[ ! "$COMMAND" =~ ^[[:space:]]*git[[:space:]]+push([[:space:]]|$) ]]; then
+  exit 0
+fi
 
 THRESHOLD=80
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
