@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "custom-mcp-server": {
+      "command": "uv",
+      "args": ["run", "--directory", "custom-mcp-server", "server.py"]
+    }
+  }
+}
