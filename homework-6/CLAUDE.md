@@ -14,17 +14,26 @@ fraud_detector,compliance_checker}.py`, `frontend/`, `mcp/server.py`,
 on `pipeline/`+`mcp/`, coverage-gate hook verified passing (Task 3); `README.md`
 (credits Yurii Habrusiev), `HOWTORUN.md`, `docs/presentation-outline.md` (Task
 5 docs). All verified independently against real command output, not just
-agent self-reports.
+agent self-reports. `docs/presentation.pdf` exported (11-slide HTML deck ->
+headless Chrome print-to-pdf) and linked in the PR. PR #14 opened against
+`main`, no reviewer assigned yet per user's request.
+
+Extra mile (beyond the assignment): `webapp.py` wraps the pipeline as a
+persistent Starlette/uvicorn service (PII-scrubbed `/shared/results/...`,
+`POST /api/run`) and is deployed live on Render's free tier at
+https://transaction-pipeline-demo.onrender.com/frontend/ (service
+`srv-d95e74jtqb8s73eo1nbg`, auto-deploys on push to this branch). Render's
+official MCP server is registered at user scope (not in this repo's
+`.mcp.json`) for agent-driven redeploys in future sessions. See
+`HOWTORUN.md`'s "Hosted demo deployment" section.
 
 Still outstanding, and cannot be done by an agent — manual/student steps only:
 1. Capture the 6 required screenshots into `docs/screenshots/` (directory
    doesn't exist yet): `pipeline-run.png`, `frontend.png`, `test-coverage.png`,
    `skill-run-pipeline.png`, `hook-trigger.png`, `mcp-interaction.png`.
-2. Export `docs/presentation-outline.md` to an actual `docs/presentation.pdf`
-   (e.g. paste into Slides/Keynote/a Markdown-to-PDF tool).
-3. Write the PR description embedding/linking the screenshots and the
-   presentation PDF (see `TASKS.md`'s Submission section for the required
-   content list).
+2. Embed/link the screenshots in the PR #14 description (see `TASKS.md`'s
+   Submission section for the required content list), and assign a reviewer
+   when ready.
 
 ## Tech stack (decided)
 
