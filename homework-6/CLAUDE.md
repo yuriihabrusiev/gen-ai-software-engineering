@@ -46,6 +46,7 @@ Still outstanding, and cannot be done by an agent — manual/student steps only:
 | Custom MCP server | FastMCP, `mcp/server.py` |
 | Docs MCP | context7 (`.mcp.json`, to be added alongside the pipeline in step 2) |
 | Lint / types | `ruff` + `ty`, run via `uv run` / `mise run lint` / `mise run typecheck` |
+| Pre-commit hooks | `prek` (`.pre-commit-config.yaml`), install via `mise run hooks:install` |
 | Test runner | pytest + pytest-cov, run via `uv run pytest` |
 
 ## Non-negotiable domain rules
@@ -90,6 +91,7 @@ homework-6/
 ├── README.md                       # Task 5 output (docs-writer) — must credit Yurii Habrusiev
 ├── HOWTORUN.md
 ├── mise.toml, pyproject.toml, uv.lock, .python-version  # uv/mise env management
+├── .pre-commit-config.yaml         # prek hooks: ruff, ty, file hygiene
 └── .gitignore
 ```
 

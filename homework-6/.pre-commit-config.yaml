@@ -1,0 +1,31 @@
+# Managed by prek (https://github.com/j178/prek), a drop-in Rust
+# reimplementation of the pre-commit framework — same config format, no
+# Python bootstrap required. Install into git with `mise run hooks:install`
+# (`prek install`); run manually against every file with `mise run hooks:run`
+# (`prek run --all-files`).
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types: [python]
+      - id: ty-check
+        name: ty check
+        entry: uv run ty check
+        language: system
+        types: [python]
+        pass_filenames: false

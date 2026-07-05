@@ -133,9 +133,10 @@ consumers of `shared/results/`; neither one runs or mutates the pipeline.
 | Layer | Choice |
 |---|---|
 | Language / runtime | Python 3.14 (pinned in `mise.toml` / `.python-version`; `requires-python >= 3.12` in `pyproject.toml`) |
-| Env / dependency manager | [`mise`](https://mise.jdx.dev/) manages the Python and `uv` tool versions; `uv` (via `pyproject.toml` + `uv.lock`) manages the virtualenv and dependencies — no `pip`/`requirements.txt` |
+| Env / dependency manager | [`mise`](https://mise.jdx.dev/) manages the Python, `uv`, and `prek` tool versions; `uv` (via `pyproject.toml` + `uv.lock`) manages the virtualenv and dependencies — no `pip`/`requirements.txt` |
 | Lint / format | [`ruff`](https://docs.astral.sh/ruff/) (`uv run ruff check .`) |
 | Type checker | [`ty`](https://github.com/astral-sh/ty) (`uv run ty check`) |
+| Pre-commit hooks | [`prek`](https://github.com/j178/prek) (`.pre-commit-config.yaml`) — runs `ruff check --fix`, `ty check`, and file-hygiene checks on every commit |
 | Pipeline stages | Plain modules under `pipeline/` (`validator.py`, `fraud_detector.py`, `compliance_checker.py`, `common.py`), file-in/file-out only |
 | Orchestration | `orchestrator.py` — drives the file-based protocol, isolates per-record failures, writes `shared/results/summary.json` |
 | Front-end | Static HTML/CSS/JS dashboard under `frontend/` (`index.html`, `app.js`, `styles.css`), no build step, served with any static file server |

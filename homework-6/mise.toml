@@ -1,10 +1,19 @@
 [tools]
 python = "3.14"
 uv = "latest"
+prek = "latest"
 
 [tasks.setup]
 description = "Install project dependencies"
 run = "uv sync"
+
+[tasks."hooks:install"]
+description = "Install the prek pre-commit hooks into .git/hooks"
+run = "prek install"
+
+[tasks."hooks:run"]
+description = "Run all prek hooks against every file"
+run = "prek run --all-files"
 
 [tasks.lint]
 description = "Run Ruff lint checks"

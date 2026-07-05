@@ -21,6 +21,7 @@ writing code.
 | Custom MCP server | FastMCP (`mcp/server.py`) | Exposes `get_transaction_status`, `list_pipeline_results`, and the `pipeline://summary` resource. |
 | Test runner | pytest + pytest-cov, run via `uv run pytest` | Coverage gate (see `.claude/settings.json`) blocks `git push` below 80%. |
 | Lint / types | `ruff` (`uv run ruff check .`) and `ty` (`uv run ty check`) | Both must be clean before pushing; see `mise run check`. |
+| Pre-commit hooks | `prek` (`.pre-commit-config.yaml`) | Runs `ruff check --fix`/`ty check`/file-hygiene checks on every commit; install via `mise run hooks:install`. |
 | Tooling | `mise` (env/tool-version manager) + `uv` (dependency/venv manager) | Dependencies live in `pyproject.toml` / `uv.lock` — no `pip`/`requirements.txt`. |
 
 ## Domain Rules (non-negotiable)

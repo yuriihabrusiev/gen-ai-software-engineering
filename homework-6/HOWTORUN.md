@@ -7,13 +7,13 @@ via `uv`, pytest 9.1.1, 69 tests, 99% coverage) as of this writing.
 ## 1. Environment setup
 
 `mise` is the main environment manager for this project — it pins the Python
-version and the `uv` version in `mise.toml`; `uv` (via `pyproject.toml` +
+version, `uv`, and `prek` in `mise.toml`; `uv` (via `pyproject.toml` +
 `uv.lock`) manages the virtualenv and dependencies. There is no `pip` /
 `requirements.txt` / manual `venv` step.
 
 1. Install [`mise`](https://mise.jdx.dev/getting-started.html) if you don't
    already have it, then install this project's pinned tools (Python 3.14,
-   latest `uv`):
+   latest `uv`, `prek`):
    ```bash
    mise install
    ```
@@ -24,6 +24,17 @@ version and the `uv` version in `mise.toml`; `uv` (via `pyproject.toml` +
    Equivalent direct `uv` command: `uv sync`. This creates `.venv/` and
    installs runtime deps (`fastmcp`, `starlette`, `uvicorn`) plus the dev
    group (`pytest`, `pytest-cov`, `ruff`, `ty`) from `uv.lock`.
+3. Install the pre-commit hooks:
+   ```bash
+   mise run hooks:install
+   ```
+   Equivalent direct command: `prek install`. This project uses
+   [`prek`](https://github.com/j178/prek) — a fast, Rust-native drop-in for
+   the `pre-commit` framework (same `.pre-commit-config.yaml` format, no
+   Python bootstrap) — to run `ruff check --fix`, `ty check`, and basic
+   file-hygiene checks (trailing whitespace, end-of-file, YAML/JSON/TOML
+   validity, merge-conflict markers) on every commit. Run it against every
+   file without committing via `mise run hooks:run` (`prek run --all-files`).
 
 ## 2. Run the pipeline
 
