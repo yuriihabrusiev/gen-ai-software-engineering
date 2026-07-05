@@ -10,9 +10,12 @@
   <header class="page-header">
     <div>
       <h1>Transaction Processing Pipeline</h1>
-      <p class="subtitle">Read-only viewer of <code>shared/results/</code> — never triggers a pipeline run.</p>
+      <p class="subtitle">Viewer of <code>shared/results/</code>.</p>
     </div>
-    <button id="refresh-button" type="button">Refresh</button>
+    <div class="header-actions">
+      <button id="run-button" type="button">Run Pipeline</button>
+      <button id="refresh-button" type="button">Refresh</button>
+    </div>
   </header>
 
   <p id="status-message" class="status-message">Loading...</p>

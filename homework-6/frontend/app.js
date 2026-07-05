@@ -2,17 +2,19 @@
  * frontend/app.js — static, no-build-step dashboard for the transaction
  * processing pipeline.
  *
- * Purely a read-only viewer: it fetches shared/results/summary.json and the
- * individual shared/results/<transaction_id>.json files, and renders counts
- * by outcome plus a per-transaction table. It never writes to shared/ and
- * never triggers a pipeline run itself. It never renders source_account,
+ * Fetches shared/results/summary.json and the individual
+ * shared/results/<transaction_id>.json files, and renders counts by outcome
+ * plus a per-transaction table. It never renders source_account,
  * destination_account, or description.
  *
- * Run: serve the repo root with a static file server (e.g.
- * `python -m http.server 8000` from the repo root) so that this page's
- * fetch() calls to "/shared/results/..." resolve against the real
- * shared/results/ directory, then open http://localhost:8000/frontend/.
- * See HOWTORUN.md for the exact command.
+ * Works in two deployments without any code change here:
+ *  - Local/static (see HOWTORUN.md): `python -m http.server 8000` from the
+ *    repo root serves the real shared/results/ files as-is; "Run Pipeline"
+ *    has nothing to POST to, so it just reports that and you re-run
+ *    `python orchestrator.py` yourself.
+ *  - Hosted demo: webapp.py serves the same /shared/results/... paths but
+ *    PII-scrubbed, and implements POST /api/run so the button actually
+ *    re-runs the pipeline.
  */
 
 const RESULTS_BASE = "/shared/results";
@@ -125,7 +127,28 @@ async function renderDashboard() {
   }
 }
 
+async function runPipeline() {
+  const statusEl = document.getElementById("status-message");
+  const runButton = document.getElementById("run-button");
+  runButton.disabled = true;
+  statusEl.textContent = "Running pipeline...";
+  try {
+    const response = await fetch("/api/run", { method: "POST" });
+    if (!response.ok) {
+      throw new Error(`POST /api/run -> HTTP ${response.status}`);
+    }
+    await renderDashboard();
+  } catch (err) {
+    statusEl.textContent =
+      `Could not trigger a run from this page (${err.message}). ` +
+      "This deployment may be static-only — run `python orchestrator.py` yourself, then Refresh.";
+  } finally {
+    runButton.disabled = false;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderDashboard();
   document.getElementById("refresh-button").addEventListener("click", renderDashboard);
+  document.getElementById("run-button").addEventListener("click", runPipeline);
 });

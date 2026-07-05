@@ -58,7 +58,13 @@ h1 {
   font-size: 0.9rem;
 }
 
-button#refresh-button {
+.header-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+button#refresh-button,
+button#run-button {
   padding: 0.5rem 1rem;
   border-radius: 6px;
   border: 1px solid var(--accent);
@@ -68,8 +74,20 @@ button#refresh-button {
   cursor: pointer;
 }
 
-button#refresh-button:hover {
+button#run-button {
+  background: transparent;
+  color: var(--accent);
+}
+
+button#refresh-button:hover,
+button#run-button:hover {
   filter: brightness(1.1);
+}
+
+button#refresh-button:disabled,
+button#run-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .status-message {
