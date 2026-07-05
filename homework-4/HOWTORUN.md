@@ -1,0 +1,146 @@
+# How to Run
+
+## Sample application: Task Tracker API
+
+### Prerequisites
+
+- [`mise`](https://mise.jdx.dev) and [`uv`](https://docs.astral.sh/uv/). The project is
+  configured for Python 3.14 via `mise.toml`.
+
+### Setup
+
+```bash
+mise install
+mise run setup     # equivalent: uv sync
+```
+
+### Run the API
+
+```bash
+mise run dev       # equivalent: uv run fastapi dev src/task_tracker_api/main.py
+```
+
+Serves at `http://127.0.0.1:8000` (interactive docs at `/docs`).
+
+### Try it (and reproduce the seeded defects)
+
+```bash
+# create a task
+curl -X POST http://127.0.0.1:8000/tasks -H 'Content-Type: application/json' \
+  -d '{"title": "Buy milk", "priority": "high"}'
+
+# Bug 1: crashes with an empty store
+curl -i http://127.0.0.1:8000/tasks/stats
+
+# Bug 2: wrong order once you have a low/high/medium mix
+curl "http://127.0.0.1:8000/tasks?sort=priority"
+
+# Security issue: hardcoded key currently works
+curl -X DELETE http://127.0.0.1:8000/admin/tasks -H "X-Admin-Key: supersecret-admin-key-123"
+```
+
+(These `curl` commands are for you to run manually in your own terminal — unrelated to
+`.claude/settings.json`, which only governs what Claude Code's own tools may do during an
+agent run.)
+
+### Run tests
+
+```bash
+mise run test       # equivalent: uv run pytest
+```
+
+Right now this reports **5 passed, 2 failed** — the 2 failures
+(`test_stats_with_no_tasks_returns_zero_percent`,
+`test_tasks_sorted_by_priority_high_to_low`) are the pinned regression tests for bugs 1
+and 2, and are expected to fail until the pipeline (or you) fixes them. See
+`context/bugs/001-task-api-defects/bug-context.md` for full details on all three seeded
+defects.
+
+Other checks: `mise run lint`, `mise run typecheck`, or both via `mise run check`.
+
+## Running the 4-agent pipeline
+
+### Prerequisites
+
+- [Claude Code](https://code.claude.com) CLI installed and authenticated (`claude` on
+  your `PATH`).
+- `jq` (optional) — if present, `run-pipeline.sh` uses it to detect success/failure from
+  the run's JSON output; without it, the script still runs, just with plainer output.
+
+No other setup is required: Claude Code automatically loads everything under `.claude/`
+(agents, skills, and permissions) whenever a session is opened in this repository.
+
+## Run the full pipeline (one command)
+
+```bash
+./run-pipeline.sh [bug-id]
+```
+
+- If you omit `bug-id`, the script looks for a single directory under `context/bugs/`
+  and uses it. It fails with a clear message if there are zero or more than one.
+- The script drives one non-interactive `claude -p` session that, in order:
+  1. Writes `context/bugs/<bug-id>/research/codebase-research.md` if it doesn't already
+     exist (investigates `bug-context.md` itself).
+  2. Delegates to the **research-verifier** subagent → `research/verified-research.md`.
+     Stops here if the verdict is **FAIL**.
+  3. Writes `context/bugs/<bug-id>/implementation-plan.md` if it doesn't already exist.
+  4. Delegates to the **bug-fixer** subagent → applies the plan, runs tests,
+     `fix-summary.md`.
+  5. Delegates to the **security-verifier** and **unit-test-generator** subagents (they
+     run independently of each other) → `security-report.md` and `test-report.md`.
+- Permissions for this non-interactive run come from `.claude/settings.json`
+  (`permissions.allow` / `permissions.deny`) combined with `--permission-mode dontAsk`,
+  so it never blocks on an interactive approval prompt.
+
+The seeded bug case is `context/bugs/001-task-api-defects/`, so this works right now:
+
+```bash
+./run-pipeline.sh 001-task-api-defects
+```
+
+## Run a single agent manually (for debugging one stage)
+
+Start an interactive Claude Code session in this repo (`claude`) and ask directly, e.g.:
+
+```
+Use the research-verifier subagent to verify context/bugs/001-task-api-defects/research/codebase-research.md
+```
+
+```
+Use the bug-fixer subagent to apply context/bugs/001-task-api-defects/implementation-plan.md
+```
+
+```
+Use the security-verifier subagent on context/bugs/001-task-api-defects/fix-summary.md
+```
+
+```
+Use the unit-test-generator subagent on context/bugs/001-task-api-defects/fix-summary.md
+```
+
+Each subagent will look under `context/bugs/` for the target directory itself if you
+don't name one explicitly, but naming it avoids ambiguity when multiple bug cases exist.
+
+## Where outputs land
+
+All pipeline output files are written inside the bug's own case directory:
+
+```
+context/bugs/<bug-id>/
+├── bug-context.md
+├── research/
+│   ├── codebase-research.md
+│   └── verified-research.md
+├── implementation-plan.md
+├── fix-summary.md
+├── security-report.md
+└── test-report.md
+```
+
+## Adjusting permissions
+
+`.claude/settings.json` currently allows `Read`, `Grep`, `Glob`, `Edit`, `Write`, and any
+`Bash` command, while explicitly denying reads of `.env`/secrets files and destructive
+commands (`rm -rf`, force-push, `git reset --hard`, `curl`, `sudo`). Tighten the `allow`
+list (e.g. to specific test commands for your Task 5 stack) if you want a narrower
+non-interactive permission surface.

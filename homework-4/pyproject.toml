@@ -1,0 +1,29 @@
+[project]
+name = "task-tracker-api"
+version = "0.1.0"
+description = "A simple in-memory FastAPI service for tracking tasks."
+readme = "README.md"
+authors = [
+    { name = "Yurii Habrusiev", email = "yuriihabrusiev@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.136.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.12",
+    "ty>=0.0.35",
+    "pytest>=8",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
