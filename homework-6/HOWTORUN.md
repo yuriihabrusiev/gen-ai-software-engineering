@@ -126,3 +126,37 @@ Both servers are declared in `.mcp.json` at the repo root:
    research `decimal` and FastMCP usage patterns — see `research-notes.md`);
    it isn't tied to this pipeline's runtime data and can be queried
    independently (e.g. "look up FastMCP resource decorators").
+
+## 6. Hosted demo deployment (Render)
+
+The live demo at https://transaction-pipeline-demo.onrender.com/frontend/ runs
+`webapp.py` (not part of the graded Task 2 deliverable — see that file's
+docstring) as a Render free-tier web service.
+
+**How it's configured:**
+- Service: `transaction-pipeline-demo` (`srv-d95e74jtqb8s73eo1nbg`), free plan,
+  region `oregon`.
+- Repo: `https://github.com/yuriihabrusiev/gen-ai-software-engineering`,
+  branch `homework-6-submission`, root directory `homework-6` (this is a
+  monorepo — Render builds only the `homework-6/` subtree).
+- Build command: `pip install -r requirements.txt`. Start command:
+  `python webapp.py`. Health check path: `/healthz`.
+- Auto-deploy is on: every push to `homework-6-submission` triggers a new
+  Render deploy automatically.
+
+**Redeploying manually** (e.g. to force a rebuild without a new commit):
+```bash
+render deploys create srv-d95e74jtqb8s73eo1nbg
+```
+
+**Agent-friendly management:** Render's official MCP server is registered at
+user scope (`claude mcp get render`, not in this repo's `.mcp.json` — that
+file is reserved for the two servers Task 4 requires). Once a Claude Code
+session picks it up (new sessions do automatically; a session already running
+when the server was added needs a restart to see its tools), you can ask
+Claude to inspect logs, check deploy status, or trigger a redeploy by name
+instead of shelling out to `render` commands.
+
+**Note on the free tier:** the service spins down after 15 minutes of no
+traffic and takes ~30-60s to wake up on the next request — expected for a
+demo, not a bug.

@@ -2,6 +2,12 @@
 
 Created by **Yurii Habrusiev**
 
+**Live demo:** https://transaction-pipeline-demo.onrender.com/frontend/ (free
+Render instance — spins down after 15 min idle, first load may take ~30-60s
+to wake up; click "Run Pipeline" to trigger a fresh run). See
+[`HOWTORUN.md`](HOWTORUN.md#6-hosted-demo-deployment-render) for how this is
+deployed and how to redeploy it.
+
 ## What this is
 
 This project is a file-based, three-stage transaction processing pipeline built
