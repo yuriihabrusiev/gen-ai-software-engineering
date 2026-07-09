@@ -156,7 +156,7 @@ Steps:
 
 #### Required: coverage gate hook (mandatory)
 
-Add a hook that **verifies unit test coverage and blocks push** (or fails the action) if coverage is **below 80%**. 
+Add a hook that **verifies unit test coverage and blocks push** (or fails the action) if coverage is **below 80%**.
 
 Use the equivalent for your stack. You may also add optional hooks (audit log, pipeline reminder).
 

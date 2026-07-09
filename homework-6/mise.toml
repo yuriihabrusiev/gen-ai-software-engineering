@@ -1,0 +1,44 @@
+[tools]
+python = "3.14"
+uv = "latest"
+prek = "latest"
+
+[tasks.setup]
+description = "Install project dependencies"
+run = "uv sync"
+
+[tasks."hooks:install"]
+description = "Install the prek pre-commit hooks into .git/hooks"
+run = "prek install"
+
+[tasks."hooks:run"]
+description = "Run all prek hooks against every file"
+run = "prek run --all-files"
+
+[tasks.lint]
+description = "Run Ruff lint checks"
+run = "uv run ruff check ."
+
+[tasks."lint:fix"]
+description = "Run Ruff and apply safe fixes"
+run = "uv run ruff check --fix ."
+
+[tasks.typecheck]
+description = "Run ty type checks"
+run = "uv run ty check"
+
+[tasks.test]
+description = "Run the pytest suite with coverage"
+run = "uv run pytest --cov=pipeline --cov=mcp --cov-report=term-missing"
+
+[tasks.check]
+description = "Run lint, type checks, and tests"
+run = "mise run lint && mise run typecheck && mise run test"
+
+[tasks.pipeline]
+description = "Run the transaction pipeline end-to-end"
+run = "uv run python orchestrator.py"
+
+[tasks.dashboard]
+description = "Serve the static dashboard + shared/results/ locally"
+run = "uv run python -m http.server 8000"
