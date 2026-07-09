@@ -1,0 +1,31 @@
+[tools]
+python = "3.14"
+uv = "latest"
+
+[tasks.setup]
+description = "Install project dependencies"
+run = "uv sync"
+
+[tasks.dev]
+description = "Run the custom MCP server"
+run = "uv run server.py"
+
+[tasks.run]
+description = "Run the custom MCP server"
+run = "uv run server.py"
+
+[tasks.lint]
+description = "Run Ruff lint checks"
+run = "uv run ruff check ."
+
+[tasks."lint:fix"]
+description = "Run Ruff and apply safe fixes"
+run = "uv run ruff check --fix ."
+
+[tasks.typecheck]
+description = "Run ty type checks"
+run = "uv run ty check"
+
+[tasks.test]
+description = "Run validation checks"
+run = "mise run lint && mise run typecheck"
